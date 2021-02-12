@@ -254,19 +254,14 @@ public class ImportExport {
                     break;
             }
             exported = readContentFromFile(file);
-            System.out.println("exported: " + exported);
             file.delete();
         } catch (JAXBException e) {
-            System.out.println("here 1");
             if (e.getLinkedException() != null) {
-                System.out.println("here 2");
                 System.out.println("Error export: " + e.getLinkedException().getMessage());
             } else {
-                System.out.println("here 3");
                 System.out.println("Error export: " + e.getMessage());
             }
         } catch (IOException | SAXException e) {
-            System.out.println("here 4");
             System.out.println("Error export: " + e.getMessage());
         }
         return exported;

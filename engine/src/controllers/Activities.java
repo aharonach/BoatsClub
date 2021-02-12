@@ -1,5 +1,6 @@
 package controllers;
 
+import engine.BCEngine;
 import entities.Activity;
 import entities.Entity;
 import interfaces.ActivitiesController;
@@ -14,6 +15,10 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 public class Activities extends Entities implements ActivitiesController {
+
+    public BCEngine engine() {
+        return super.engine();
+    }
 
     @Override
     public ActivityWrapper get(int id) throws RecordNotFoundException {

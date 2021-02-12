@@ -1,5 +1,6 @@
 package controllers;
 
+import engine.BCEngine;
 import entities.Boat;
 import entities.Entity;
 import entities.Order;
@@ -17,6 +18,10 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 public class Rowers extends Entities implements RowersController {
+
+    public BCEngine engine() {
+        return super.engine();
+    }
 
     @Override
     public RowerWrapper get(int id) throws RecordNotFoundException {

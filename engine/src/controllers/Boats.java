@@ -1,5 +1,6 @@
 package controllers;
 
+import engine.BCEngine;
 import entities.Boat;
 import entities.Entity;
 import entities.Order;
@@ -16,6 +17,10 @@ import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
 public class Boats extends Entities implements BoatsController {
+
+    public BCEngine engine() {
+        return super.engine();
+    }
 
     @Override
     public BoatWrapper get(int id) throws RecordNotFoundException {

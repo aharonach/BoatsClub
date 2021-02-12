@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 public class XMLDatabase {
-    private final String directory = "resources";
+    private final String directory = System.getProperty("user.dir").replace("bin", "webapps") + "/boatsclub-resources";
     private final String xmlPath = "database.xml";
     private final Database database;
     private File file;

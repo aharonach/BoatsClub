@@ -49,7 +49,6 @@ public interface Controller {
      * Helper method to get the array list of records from entity
      *
      * @return array of records from entity
-     * @TODO change it to return Wrapper[]
      */
     Entity[] getList();
 
@@ -58,7 +57,6 @@ public interface Controller {
      *
      * @param condition filter based on this condition
      * @return array of records
-     * @TODO change it to return Wrapper[]
      */
     Entity[] filterList(Predicate<? super Entity> condition);
 
@@ -68,7 +66,6 @@ public interface Controller {
      * @param id record id
      * @return the found record
      * @throws RecordNotFoundException if record doesn't exists
-     * @TODO change it to return Wrapper
      */
     Entity getRecord(int id) throws RecordNotFoundException;
 }

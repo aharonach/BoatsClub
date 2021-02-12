@@ -61,6 +61,13 @@ public interface OrdersController extends Controller {
      */
     Order[] findOrdersByRower(int rowerId);
 
+    /**
+     * Get all orders which created by a specific rower
+     * @param rowerId the rower id
+     * @return orders
+     */
+    Order[] findOrdersCreatedByRower(int rowerId);
+
     List<Integer> findOrderRowers(Order order);
 
     /**

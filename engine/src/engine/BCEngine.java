@@ -68,7 +68,6 @@ public class BCEngine implements Engine {
 
         // create first admin if no admin rowers exists
         if (filterList( "rowers", r -> ((Rower) r).isManager() ).size() == 0) {
-            System.out.println("hello");
             createAdmin();
         }
     }
@@ -182,20 +181,18 @@ public class BCEngine implements Engine {
     }
 
     @Override
-    public Rower authenticate(String email, String password) throws CredentialNotFoundException, AlreadyLoggedInException {
+    public Rower authenticate(String email, String password) throws CredentialNotFoundException {
         for (Entity entry : getList("rowers").values()) {
             Rower rower = (Rower) entry;
             if (rower.getEmailAddress().equalsIgnoreCase(email)) {
                 if (BCrypt.checkpw(password, rower.getPassword())) {
-                    if (ActiveUsers.isAlreadyActive(rower.getId())) {
-                        throw new AlreadyLoggedInException(rower.getEmailAddress(), ActiveUsers.getTimeoutOfUser(rower.getId()));
-                    }
                     ActiveUsers.addActiveUser(rower.getId());
                     return rower;
                 }
+                break;
             }
         }
-        throw new CredentialNotFoundException("Email or password are wrong. Please try again.");
+        throw new CredentialNotFoundException("Email or password are wrong.");
     }
 
     /**
@@ -231,7 +228,7 @@ public class BCEngine implements Engine {
                 LocalDateTime.now().plusYears(Rower.yearsUntilExpired),
                 "",
                 "admin@boatsclub.com",
-                "boatsclub",
+                BCrypt.hashpw("boatsclub", BCrypt.gensalt()),
                 false,
                 true,
                 ""

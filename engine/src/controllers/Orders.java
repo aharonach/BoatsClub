@@ -1,10 +1,10 @@
 package controllers;
 
+import engine.BCEngine;
 import entities.Boat;
 import entities.Entity;
 import entities.Order;
 import entities.Rower;
-import interfaces.Controller;
 import interfaces.OrdersController;
 import wrappers.Wrapper;
 import utils.Validations;
@@ -16,11 +16,16 @@ import wrappers.OrderWrapper;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
 public class Orders extends Entities implements OrdersController {
+
+    public BCEngine engine() {
+        return super.engine();
+    }
 
     @Override
     public OrderWrapper get(int id) throws RecordNotFoundException {
@@ -143,7 +148,11 @@ public class Orders extends Entities implements OrdersController {
 
     @Override
     public Order[] getList() {
-        return engine().getList("orders").values().toArray(new Order[0]);
+        if (engine().isAdmin()) {
+            return engine().getList("orders").values().toArray(new Order[0]);
+        } else {
+            return findOrdersByRower(engine().getUser().getId());
+        }
     }
 
     @Override
@@ -204,6 +213,18 @@ public class Orders extends Entities implements OrdersController {
         return filterList(o -> {
             Order order = (Order) o;
             return order.getRowers() != null && order.getRowers().contains(rowerId);
+        });
+    }
+
+    /**
+     * Get all orders which created by a specific rower
+     * @param rowerId the rower id
+     * @return orders
+     */
+    public Order[] findOrdersCreatedByRower(int rowerId) {
+        return filterList(o -> {
+            Order order = (Order) o;
+            return order.getRegisterRower() == rowerId;
         });
     }
 
