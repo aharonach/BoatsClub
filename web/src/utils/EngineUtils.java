@@ -1,7 +1,10 @@
 package utils;
 
+import controllers.Activities;
+import controllers.Boats;
+import controllers.Orders;
+import controllers.Rowers;
 import engine.BCEngine;
-import entities.Rower;
 import interfaces.*;
 
 import javax.servlet.ServletContext;
@@ -15,23 +18,19 @@ public class EngineUtils {
         return getEngine(context).getController(entityType);
     }
 
-    public static RowersController getRowers(ServletContext context) {
-        return (RowersController) getController(context, "rowers");
+    public static Rowers getRowers(ServletContext context) {
+        return (Rowers) getController(context, "rowers");
     }
 
-    public static BoatsController getBoats(ServletContext context) {
-        return (BoatsController) getController(context, "boats");
+    public static Boats getBoats(ServletContext context) {
+        return (Boats) getController(context, "boats");
     }
 
-    public static ActivitiesController getActivites(ServletContext context) {
-        return (ActivitiesController) getController(context, "activities");
+    public static Activities getActivites(ServletContext context) {
+        return (Activities) getController(context, "activities");
     }
 
-    public static OrdersController getOrders(ServletContext context) {
-        return (OrdersController) getController(context, "orders");
-    }
-
-    public static Rower getCurrentUser(ServletContext context) {
-        return (Rower) context.getAttribute("user");
+    public static Orders getOrders(ServletContext context) {
+        return (Orders) getController(context, "orders");
     }
 }

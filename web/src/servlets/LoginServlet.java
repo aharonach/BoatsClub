@@ -1,7 +1,9 @@
 package servlets;
 
+import com.google.gson.Gson;
 import constants.Constants;
 import entities.Rower;
+import server.Response;
 import utils.EngineUtils;
 import utils.SessionUtils;
 import utils.TemplateUtils;
@@ -12,7 +14,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.stream.Collectors;
 
 @WebServlet(name = "LoginServlet", urlPatterns = "/login")
 public class LoginServlet extends HttpServlet {
@@ -28,16 +33,25 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
         String email = req.getParameter("email");
         String password = req.getParameter("password");
+        
+        resp.setContentType("application/json");
 
         if (email != null && password != null) {
-            try {
-                Rower rower = EngineUtils.getEngine(getServletContext()).authenticate(email, password);
-                SessionUtils.setUser(req, rower);
-                resp.sendRedirect(Constants.ROOT_PATH);
-            } catch (CredentialNotFoundException e) {
-                System.out.println(e.getMessage());
+            String json;
+            Gson gson = new Gson();
+            try (PrintWriter out = resp.getWriter()) {
+                try {
+                    Rower rower = EngineUtils.getEngine(getServletContext()).authenticate(email, password);
+                    SessionUtils.setUser(req, rower);
+                    json = gson.toJson(new Response(true, "Successfully logged in"));
+                } catch (CredentialNotFoundException e) {
+                    json = gson.toJson(new Response(false, "Credential not found"));
+                }
+                out.println(json);
+                out.flush();
             }
         }
     }

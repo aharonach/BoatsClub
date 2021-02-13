@@ -9,6 +9,7 @@
         <element id="directory" name="lib">
           <element id="artifact" artifact-name="common:jar" />
           <element id="artifact" artifact-name="engine:jar" />
+          <element id="library" level="project" name="gson-2.8.6" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="web/web/Web" />

@@ -3,29 +3,21 @@ package server;
 import java.io.Serializable;
 
 public class Response implements Serializable {
-    boolean isUserActive = false;
-    Object object = null;
-    Throwable exception = null;
+    String error = null;
+    Object value;
+    boolean status;
 
-    public Response() {}
-
-    public Response(/*boolean isUserActive,*/ Object object, Throwable exception){
-//        this.isUserActive = isUserActive;
-        this.object = object;
-        if (exception != null) {
-            this.exception = exception;
+    public Response(boolean status, Object value){
+        this.status = status;
+        if (this.status) {
+            this.value = value;
+        } else {
+            this.error = (String) value;
+            this.value = null;
         }
     }
 
-    public Object getObject(){
-        return object;
-    }
-
-    public Throwable getException() {
-        return exception;
-    }
-
-    public boolean isUserActive() {
-        return isUserActive;
+    public Object getValue(){
+        return value;
     }
 }

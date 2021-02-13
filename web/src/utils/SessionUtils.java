@@ -3,6 +3,7 @@ package utils;
 import constants.Constants;
 import entities.Rower;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -20,5 +21,17 @@ public class SessionUtils {
 
     public static void clearSession(HttpServletRequest request) {
         request.getSession().invalidate();
+    }
+
+    public static boolean checkPermissions(HttpServletRequest request) {
+        Rower user = getUser(request);
+        return user != null;
+    }
+
+    public static void checkAdminPermission(HttpServletRequest request) throws ServletException {
+        Rower user = getUser(request);
+        if (user != null && !user.isManager()) {
+            throw new ServletException("You don't have permissions");
+        }
     }
 }
