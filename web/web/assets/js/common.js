@@ -1,6 +1,6 @@
 const ROOT_PATH = '/boatsclub';
 
-async function ajaxRequest(url, method = "get", data = {}) {
+async function ajaxRequest(url, method = 'get', data = {}) {
     try {
         let params = {
             method: method,
@@ -27,10 +27,18 @@ function getFormData(formName) {
     return data;
 }
 
-function putContent(content) {
-    const main = document.getElementById("main-content");
-    main.innerHTML = '';
-    main.appendChild(content);
+function putContent(title, content) {
+    const mainEl = document.getElementById("main-content");
+    mainEl.innerHTML = '';
+    if (title) {
+        const titleEl = document.getElementById("main-title");
+        titleEl.innerHTML = title;
+    }
+    if (typeof(content) === 'string') {
+        mainEl.innerHTML = content;
+    } else {
+        mainEl.appendChild(content);
+    }
 }
 
 function showAlert(type, content) {
@@ -54,32 +62,25 @@ function showAlert(type, content) {
     }, 5000);
 }
 
-function createTableHeader(columns) {
-    let table = document.createElement("table");
-    table.className = 'table table-responsive';
-    const thead = document.createElement("tr");
-    for (const [key, value] of Object.entries(columns)) {
-        let th = document.createElement("th");
-        th.innerHTML = value;
-        thead.appendChild(th);
-    }
-    table.appendChild(thead);
-    return table;
+function createTable(id, columns, list, createRowFunction, showActions = false) {
+    return `<div class="table-responsive"><table id="${id}" class="table table-hover"><thead>${tableHeader(columns)}</thead><tbody>${tableRows(list, createRowFunction, showActions)}</tbody></table></div>`;
 }
 
-function createTableRows(list, table, columns) {
-    for(i = 0; i < list.length; i++) {
-        let tr = document.createElement("tr");
-        console.log(list[i]);
-        for (const [key, value] of Object.entries(list[i])) {
-            console.log(value);
-            let td = document.createElement("td");
-            td.innerHTML = value;
-            tr.appendChild(td);
-        }
-        table.appendChild(tr);
+function tableHeader(columns) {
+    let header = `<tr>`;
+    for (const [key, value] of Object.entries(columns)) {
+        header += `<th>${value}</th>`;
     }
-    return table;
+    header += `<tr>`;
+    return header;
+}
+
+function tableRows(list, createRowFunction, showActions) {
+    let rows = '';
+    for(let i = 0; i < list.length; i++) {
+        rows += createRowFunction(list[i], showActions);
+    }
+    return rows;
 }
 
 // document.querySelectorAll('.nav-link').forEach(function(navLink) {
