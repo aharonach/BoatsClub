@@ -62,8 +62,11 @@ function showAlert(type, content) {
     }, 5000);
 }
 
-function createTable(id, columns, list, createRowFunction, showActions = false) {
-    return `<div class="table-responsive"><table id="${id}" class="table table-hover"><thead>${tableHeader(columns)}</thead><tbody>${tableRows(list, createRowFunction, showActions)}</tbody></table></div>`;
+function createTable(id, columns, list, createRowFunction, showActions = false, menuItem) {
+    if(list === undefined)
+        putContent('No ' + menuItem + ' found.', '')
+    else
+        return `<div class="table-responsive"><table id="${id}" class="table table-hover"><thead>${tableHeader(columns)}</thead><tbody>${tableRows(list, createRowFunction, showActions)}</tbody></table></div>`;
 }
 
 function tableHeader(columns) {
@@ -77,7 +80,7 @@ function tableHeader(columns) {
 
 function tableRows(list, createRowFunction, showActions) {
     let rows = '';
-    for(let i = 0; i < list.length; i++) {
+    for(let i = 0;i < list.length; i++) {
         rows += createRowFunction(list[i], showActions);
     }
     return rows;

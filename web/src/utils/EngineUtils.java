@@ -26,9 +26,7 @@ public class EngineUtils {
         return (Boats) getController(context, "boats");
     }
 
-    public static Activities getActivites(ServletContext context) {
-        return (Activities) getController(context, "activities");
-    }
+    public static Activities getActivites(ServletContext context) { return (Activities) getController(context, "activities"); }
 
     public static Orders getOrders(ServletContext context) {
         return (Orders) getController(context, "orders");

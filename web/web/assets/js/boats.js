@@ -37,7 +37,7 @@ function boatRow(boat, showActions = false) {
 document.querySelector('#boats').addEventListener("click", function(e) {
     e.preventDefault();
     ajaxRequest(e.target.href).then(function(response) {
-        let table = createTable('boats-list', getBoatsColumns(), response, boatRow, true );
+        let table = createTable('boats-list', getBoatsColumns(), response, boatRow, true , 'boats');
         putContent("Boats", table);
     });
 })
