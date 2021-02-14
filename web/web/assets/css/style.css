@@ -101,3 +101,12 @@ body {
     border-color: transparent;
     box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
 }
+
+.main-nav-link + .subnav {
+    display: none;
+    box-shadow: inset 0 10px 15px -20px black, inset 0 -10px 15px -20px black;
+}
+
+.main-nav-link.active + .subnav {
+    display: block;
+}
