@@ -33,9 +33,18 @@ public class Boats extends Entities implements BoatsController {
         Boat boatToUpdate = getRecord(id);
 
         // Check things before updating the record in database
-        checkNameUnique(newBoat);
-        checkDisabledBoat(newBoat);
-        checkBoatAppointed(id, newBoat);
+        
+        if (!newBoat.getName().equals(boatToUpdate.getName())) {
+            checkNameUnique(newBoat);
+        }
+
+        if (newBoat.isDisabled() != boatToUpdate.isDisabled()) {
+            checkDisabledBoat(newBoat);
+        }
+
+        if (!newBoat.getType().equals(boatToUpdate.getType())) {
+            checkBoatAppointed(id, newBoat);
+        }
 
         // get updated fields (fieldName -> value)
         Map<String, Object> updatedFields = boat.updatedFields();

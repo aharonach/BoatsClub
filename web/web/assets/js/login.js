@@ -1,6 +1,5 @@
 function login() {
-    ajaxRequest('login', 'post', getFormData('login-form')).then(function(response) {
-        console.log(response);
+    ajaxRequest('login', 'post', getFormData('login-form')).then( (response) => {
         if (response.status) {
             showAlert('success', response.value);
             setTimeout(function() {
@@ -12,7 +11,7 @@ function login() {
     });
 }
 
-document.forms.namedItem('login-form').addEventListener("submit", function(e) {
+document.forms.namedItem('login-form').addEventListener("submit", (e) => {
     e.preventDefault();
     login();
 });

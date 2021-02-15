@@ -1,4 +1,4 @@
-const formFields = [
+const boatsFormFields = [
     {
         id: "name",
         type: "text",
@@ -26,18 +26,6 @@ const formFields = [
         ],
     },
     {
-        id: "isPrivate",
-        type: "checkbox",
-        label: "Private",
-        selected: false,
-    },
-    {
-        id: "isWide",
-        type: "checkbox",
-        label: "Wide",
-        selected: false,
-    },
-    {
         id: "isCoastal",
         type: "checkbox",
         label: "Coastal",
@@ -47,6 +35,18 @@ const formFields = [
         id: "isDisabled",
         type: "checkbox",
         label: "Disabled",
+        selected: false,
+    },
+    {
+        id: "isPrivate",
+        type: "checkbox",
+        label: "Private",
+        selected: false,
+    },
+    {
+        id: "isWide",
+        type: "checkbox",
+        label: "Wide",
         selected: false,
     },
 ];
@@ -63,15 +63,15 @@ function getBoatsColumns() {
     };
 }
 
-function getBoatActions() {
-    return `<span class="actions d-block"><a class="edit-link" href="#">Edit</a> | <a class="delete-link text-danger" href="#">Delete</a>`;
+function getBoatActions(boatId) {
+    return `<span class="actions d-block">${editLink("boats", boatId)} | ${deleteLink("boats", boatId)}</span>`;
 }
 
 function boatRow(boat, showActions = false) {
-    let row = `<tr>`;
+    let row = `<tr data-id="${boat.id}">`;
 
     if (showActions) {
-        row += `<td>${boat.id} ${getBoatActions()}</span></td>`;
+        row += `<td>${boat.id} ${getBoatActions(boat.id)}</span></td>`;
     } else {
         row += `<td>${boat.id}</td>`;
     }
@@ -97,6 +97,12 @@ document.querySelector('#boats').addEventListener("click", function(e) {
 
 document.querySelector('#boats-add').addEventListener("click", function(e) {
     e.preventDefault();
-    const form = new Form("add-boat", "post", formFields);
+    const form = new Form({
+        id: "add-boat",
+        method: "post",
+        fields: boatsFormFields,
+        action: e.target.href,
+    });
     putContent("Add New Boat", form.getHtml());
+    submitForm("add-boat", "boats");
 });
