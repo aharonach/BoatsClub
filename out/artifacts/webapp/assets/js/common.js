@@ -34,6 +34,7 @@ function putContent(title, content) {
         const titleEl = document.getElementById("main-title");
         titleEl.innerHTML = title;
     }
+
     if (typeof(content) === 'string') {
         mainEl.innerHTML = content;
     } else {
@@ -65,7 +66,7 @@ function showAlert(type, content) {
 function createTable(id, columns, list, createRowFunction, showActions = false, menuItem) {
     if(list === undefined)
         putContent('No ' + menuItem + ' found.', '')
-return `<div class="table-responsive"><table id="${id}" class="table table-hover"><thead>${tableHeader(columns)}</thead><tbody>${tableRows(list, createRowFunction, showActions)}</tbody></table></div>`;
+    return `<div class="table-responsive"><table id="${id}" class="table table-hover"><thead>${tableHeader(columns)}</thead><tbody>${tableRows(list, createRowFunction, showActions)}</tbody></table></div>`;
 }
 
 function tableHeader(columns) {
@@ -85,13 +86,16 @@ function tableRows(list, createRowFunction, showActions) {
     return rows;
 }
 
-// document.querySelectorAll('.nav-link').forEach(function(navLink) {
-//    navLink.addEventListener("click", function(e) {
-//        e.preventDefault();
-//        ajaxRequest(navLink.href).then(function(response) {
-//            console.log(response);
-//            let table = createTableRows(response, createTableHeader(getBoatsColumns()), getBoatsColumns());
-//            putContent(table);
-//        });
-//    })
-// });
+/**
+ * Dropdown menu - open sub menu on click
+ */
+document.querySelectorAll('.main-nav-link').forEach(navLink => {
+   navLink.addEventListener("click", e => {
+       e.preventDefault();
+       if (navLink.classList.contains('active')) {
+           navLink.classList.remove('active');
+       } else {
+           navLink.classList.add('active');
+       }
+   });
+});

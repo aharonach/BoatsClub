@@ -34,14 +34,18 @@ function rowerRow(rower, showActions = false) {
         row += `<td>${rower.id}</td>`;
     }
 
-    row += `<td>${rower.name}</td>
+    let startTime = JSON.stringify(rower.joined.toString(), localDateTimeReplacer);
+    let parsedStartTime = JSON.parse(startTime);
+    console.log(parsedStartTime)
+        row += `<td>${rower.name}</td>
         <td>${rower.age}</td>
         <td>${rower.emailAddress}</td>
         <td>${rower.phoneNumber}</td>
         <td>${rower.level}</td>
         <td>${rower.hasPrivateBoat}</td>
-        
-        <td>${JSON.stringify(rower.joined, localDateTimeReplacer)} </td>
+<!--        var jsonString = '{"some":"json"}';-->
+<!--var jsonPretty = JSON.stringify(JSON.parse(jsonString),null,2); -->
+        <td>${JSON.parse(JSON.stringify(rower.joined.toString(), localDateTimeReplacer))} </td>
         <td>${JSON.stringify(rower.expired, localDateTimeReplacer)}</td>
 
         <td>${rower.isManager}</td>
