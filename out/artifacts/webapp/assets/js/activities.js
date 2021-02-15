@@ -2,8 +2,7 @@ function getActivitiesColumns() {
     return {
         id: "Id",
         title: "Title",
-        startTime: "Start time",
-        endTime: "End time",
+        time: "Time",
         boatType: "Boat type",
     };
 }
@@ -22,9 +21,8 @@ function getActivitiesColumns() {
         }
 
         row += `<td>${activity.title}</td>
-        <td>${JSON.stringify(activity.startTime.valueOf(), localDateTimeReplacer)}</td>
-        <td>${JSON.stringify(activity.endTime, localDateTimeReplacer)}</td>
-        <td>${JSON.stringify(activity.boatType)}</td>
+        <td>${formatTime(activity.startTime) + ' - ' + formatTime(activity.endTime)}</td>
+        <td>${activity.boatType? activity.boatType:''}</td>
         </tr>`;
 
         return row;
@@ -34,6 +32,7 @@ function getActivitiesColumns() {
     document.querySelector('#activities').addEventListener("click", function (e) {
         e.preventDefault();
         ajaxRequest(e.target.href).then(function (response) {
+            console.log(response);
             let table = createTable('activities-list', getActivitiesColumns(), response, activityRow, true, 'activities');
             putContent("Activities", table);
         });

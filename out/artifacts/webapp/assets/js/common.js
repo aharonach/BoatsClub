@@ -86,6 +86,26 @@ function tableRows(list, createRowFunction, showActions) {
     return rows;
 }
 
+function formatDate(object) {
+    return object.day + '/' + object.month + '/' + object.year;
+}
+function formatTime(object) {
+    return object.hour + ':' + object.minute;
+}
+function booleanFeather(object) {
+    if (object.toString() === 'true')
+        return `<img src='assets/img/check.svg'>`;
+    else if((object.toString() === 'false'))
+        return `<img src='assets/img/x.svg'>`;
+    else
+        return object;
+}
+function formatDateTime(object) {
+    return formatDate(object.date) + ', ' + formatTime(object.time);
+}
+
+
+
 /**
  * Dropdown menu - open sub menu on click
  */

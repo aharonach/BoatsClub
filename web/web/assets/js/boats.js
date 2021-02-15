@@ -56,10 +56,10 @@ function getBoatsColumns() {
         id: "Id",
         name: "Name",
         type: "Type",
-        isCoastal: "is Coastal",
-        isDisabled: "is Disabled",
-        isPrivate: "is Private",
-        isWide: "is Wide",
+        isCoastal: "Coastal",
+        isDisabled: "Disabled",
+        isPrivate: "Private",
+        isWide: "Wide",
     };
 }
 
@@ -78,10 +78,10 @@ function boatRow(boat, showActions = false) {
 
     row += `<td>${boat.name}</td>
         <td>${boat.type}</td>
-        <td>${boat.isCoastal}</td>
-        <td>${boat.isDisabled}</td>
-        <td>${boat.isPrivate}</td>
-        <td>${boat.isWide}</td>
+        <td>${booleanFeather(boat.isCoastal)}</td>
+        <td>${booleanFeather(boat.isDisabled)}</td>
+        <td>${booleanFeather(boat.isPrivate)}</td>
+        <td>${booleanFeather(boat.isWide)}</td>
     </tr>`;
 
     return row;

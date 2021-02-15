@@ -25,43 +25,54 @@
     <div class="row">
         <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
             <div class="sidebar-sticky pt-3">
-                <ul class="nav flex-column">
+                <ul class="main-nav nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">
-                            <span data-feather="home"></span>
-                            Dashboard <span class="sr-only">(current)</span>
+                        <a class="nav-link" href="#">
+                            <span data-feather="home"></span> Dashboard
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a id="orders" class="nav-link" href="orders">
-                            <span data-feather="file"></span>
-                            Orders
+                    <li class="nav-item dropdown">
+                        <a class="nav-link main-nav-link dropdown-toggle" href="#">
+                            <span data-feather="file"> </span> Orders
                         </a>
+                        <ul class="nav flex-column subnav">
+                            <li class="nav-item"><a id="orders" class="nav-link" href="orders">View Orders</a></li>
+                            <li class="nav-item"><a id="orders-add" class="nav-link" href="orders/add">Add New Order</a></li>
+                        </ul>
                     </li>
-                    <li class="nav-item">
-                        <a id="boats" class="nav-link" href="boats">
-                            <span data-feather="anchor"></span>
-                            Boats
+                    <li class="nav-item dropdown">
+                        <a class="nav-link main-nav-link dropdown-toggle" href="#">
+                            <span data-feather="anchor"></span> Boats
                         </a>
+                        <ul class="nav flex-column subnav">
+                            <li class="nav-item"><a id="boats" class="nav-link" href="boats">View Boats</a></li>
+                            <li class="nav-item"><a id="boats-add" class="nav-link" href="boats/add">Add New Boat</a></li>
+                        </ul>
                     </li>
-                    <li class="nav-item">
-                        <a id="rowers" class="nav-link" href="rowers">
-                            <span data-feather="users"></span>
-                            Rowers
+                    <li class="nav-item dropdown">
+                        <a class="nav-link main-nav-link dropdown-toggle" href="#">
+                            <span data-feather="users"></span> Rowers
                         </a>
+                        <ul class="nav flex-column subnav">
+                            <li class="nav-item"><a id="rowers" class="nav-link" href="rowers">View Rowers</a></li>
+                            <li class="nav-item"><a id="rowers-add" class="nav-link" href="rowers/add">Add New Rower</a></li>
+                        </ul>
                     </li>
-                    <li class="nav-item">
-                        <a id="activities" class="nav-link" href="activities">
-                            <span data-feather="calendar"></span>
-                            Activities
+                    <li class="nav-item dropdown">
+                        <a class="nav-link main-nav-link dropdown-toggle" href="#">
+                            <span data-feather="calendar"></span> Activities
                         </a>
+                        <ul class="nav flex-column subnav">
+                            <li class="nav-item"><a id="activities" class="nav-link" href="activities">View Activities</a></li>
+                            <li class="nav-item"><a id="activities-add" class="nav-link" href="activities/add">Add New Activity</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>
         </nav>
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
                 <h1 id="main-title" class="h2">Dashboard</h1>
                 <div class="btn-toolbar mb-2 mb-md-0">
                     <div class="btn-group mr-2">
@@ -77,6 +88,7 @@
 </div>
 <script type="text/javascript" src="assets/js/feather.min.js"></script>
 <script>feather.replace();</script>
+<script type="text/javascript" src="assets/js/forms.js"></script>
 <script type="text/javascript" src="assets/js/common.js"></script>
 <script type="text/javascript" src="assets/js/boats.js"></script>
 <script type="text/javascript" src="assets/js/orders.js"></script>
