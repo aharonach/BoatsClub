@@ -19,13 +19,68 @@
  * }
  */
 
-class Form {
-    constructor(id, method, fields, submitLabel = "Submit") {
-        this.id = id;
-        this.method = method;
-        this.fields = fields;
+function getFormFields(entity) {
+    switch (entity) {
+        case "boats":
+            return boatsFormFields;
+    }
+}
 
-        let form = `<form id="${this.id}" name="${this.id}" method="${this.method}">`;
+function prepareFormFields(record, formFields) {
+    // clone fields
+    const newFormFields = JSON.parse(JSON.stringify(formFields));
+
+    newFormFields.forEach(field => {
+        let value = record[field.id];
+        if (value) {
+            switch (field.type) {
+                case "select":
+                    for(const option of field.options) {
+                        if (option.value === record[field.id]) {
+                            option.selected = true;
+                        }
+                    }
+                    break;
+                case "radio":
+                    value = value.split(',');
+                    for(const option of field.options) {
+                        for (const selectedValue of value) {
+                            if (option.value === selectedValue) {
+                                option.selected = true;
+                            }
+                        }
+                    }
+                    break;
+                case "checkbox":
+                    field.selected = value;
+                    break;
+                default:
+                    field.value = value;
+                    break;
+            }
+        }
+    });
+
+    newFormFields.push({
+        id: 'id',
+        type:'hidden',
+        value: record.id,
+    });
+
+    return newFormFields;
+}
+
+class Form {
+    constructor(args) {
+        this.id = args.id;
+        this.method = args.method;
+        this.action = args.action;
+        this.fields = args.fields;
+
+        let onSubmit = args.onsubmit ? `onsubmit="${args.onsubmit}()"` : '';
+        let submitLabel = args.submitLabel ? args.submitLabel : "Submit";
+
+        let form = `<form id="${this.id}" name="${this.id}" method="${this.method}" action="${this.action}" ${onSubmit}>`;
         for (let field of this.fields) {
             switch (field.type) {
                 case "select":
@@ -61,7 +116,7 @@ class Form {
     }
 
     checkboxField(args) {
-        let field = `<input type="checkbox" class="form-check-input" id="${args.id}" name="${args.id}"> <label class="form-check-label" for="${args.id}">${args.label}</label>`;
+        let field = `<input type="checkbox" class="form-check-input" id="${args.id}" value="true" name="${args.id}" ${args.selected ? "checked" : ""}> <label class="form-check-label" for="${args.id}">${args.label}</label>`;
         return this.formGroupWrap(this.formCheckWrap(field));
     }
 
@@ -84,7 +139,7 @@ class Form {
     }
 
     defaultField(args) {
-        let field = this.label(args.id, args.label);
+        let field = args.label ? this.label(args.id, args.label) : '';
         field += `<input class="form-control" type="${args.type}" value="${args.value}" id="${args.id}" name="${args.id}" ${this.required(args)}>`;
         return this.formGroupWrap(field);
     }

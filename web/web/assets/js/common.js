@@ -73,13 +73,19 @@ function showAlert(type, content) {
     switch (type) {
         case 'success':
             feedback.classList.add('alert-success');
+            feedback.classList.remove('alert-danger');
+            feedback.classList.remove('alert-info');
             break;
         case 'error':
             feedback.classList.add('alert-danger');
+            feedback.classList.remove('alert-success');
+            feedback.classList.remove('alert-info');
             content = "Error: " + content;
             break;
         case 'info':
             feedback.classList.add('alert-info');
+            feedback.classList.remove('alert-danger');
+            feedback.classList.remove('alert-success');
             break;
     }
     feedback.innerHTML = content;

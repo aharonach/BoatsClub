@@ -2,6 +2,14 @@ body {
     font-size: .875rem;
 }
 
+.modal {
+    background: rgba(0,0,0,0.5);
+}
+
+.modal.show {
+    display: block;
+}
+
 .feather {
     width: 16px;
     height: 16px;
@@ -109,4 +117,17 @@ body {
 
 .main-nav-link.active + .subnav {
     display: block;
+}
+
+.table-hover tr .actions {
+    visibility: hidden;
+}
+
+.table-hover tr:hover .actions {
+    visibility: visible;
+}
+
+.table-hover .feather {
+    width: 1.25rem;
+    height: 1.25rem;
 }
