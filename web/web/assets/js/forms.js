@@ -23,6 +23,8 @@ function getFormFields(entity) {
     switch (entity) {
         case "boats":
             return boatsFormFields;
+        case "rowers":
+            return rowersFormFields;
     }
 }
 
@@ -30,12 +32,12 @@ function prepareFormFields(record, formFields) {
     // clone fields
     const newFormFields = JSON.parse(JSON.stringify(formFields));
 
-    newFormFields.forEach(field => {
+    for (const field of newFormFields) {
         let value = record[field.id];
         if (value) {
             switch (field.type) {
                 case "select":
-                    for(const option of field.options) {
+                    for (const option of field.options) {
                         if (option.value === record[field.id]) {
                             option.selected = true;
                         }
@@ -43,7 +45,7 @@ function prepareFormFields(record, formFields) {
                     break;
                 case "radio":
                     value = value.split(',');
-                    for(const option of field.options) {
+                    for (const option of field.options) {
                         for (const selectedValue of value) {
                             if (option.value === selectedValue) {
                                 option.selected = true;
@@ -54,20 +56,42 @@ function prepareFormFields(record, formFields) {
                 case "checkbox":
                     field.selected = value;
                     break;
+                case "password":
+                    break;
                 default:
                     field.value = value;
                     break;
             }
         }
-    });
+    }
 
     newFormFields.push({
         id: 'id',
-        type:'hidden',
+        type: 'hidden',
         value: record.id,
     });
 
     return newFormFields;
+}
+
+async function prepareOptions(fields) {
+    for (const field of fields) {
+        if ((field.type === 'select' || field.type === 'radio') && field.options[0].ajax) {
+            const valueField = field.options[0].valueField,
+                labelField = field.options[0].labelField;
+
+            const json = await ajaxRequest(field.options[0].ajax);
+            field.options = [];
+            for (const record of json) {
+                field.options.push({
+                    value: record[valueField],
+                    label: record[labelField],
+                    selected: false
+                });
+            }
+            field.options[0].selected = true;
+        }
+    }
 }
 
 class Form {
@@ -108,6 +132,10 @@ class Form {
     selectField(args) {
         let field = this.label(args.id, args.label);
         field += `<select class="form-control" id="${args.id}" ${args.multiple ? "multiple" : ""}>`;
+        // if (typeof(args.options) === 'string') {
+        //     const list = await (await fetch(args.options)).json();
+        //     args.options = prepareOptions(list);
+        // }
         for (let option of args.options) {
             field += `<option value="${option.value}" ${option.selected ? "selected" : ""}>${option.label}</option>`;
         }
@@ -134,13 +162,15 @@ class Form {
 
     textareaField(args) {
         let field = this.label(args.id, args.label);
-        field += `<textarea class="form-control" id="${args.id}" name="${args.id}" ${this.required(args)}>${args.value}</textarea>`;
+        const value = args.value ? args.value : '';
+        field += `<textarea class="form-control" id="${args.id}" name="${args.id}" ${this.required(args)}>${value}</textarea>`;
         return this.formGroupWrap(field);
     }
 
     defaultField(args) {
         let field = args.label ? this.label(args.id, args.label) : '';
-        field += `<input class="form-control" type="${args.type}" value="${args.value}" id="${args.id}" name="${args.id}" ${this.required(args)}>`;
+        const value = args.value ? args.value : '';
+        field += `<input class="form-control" type="${args.type}" value="${value}" id="${args.id}" name="${args.id}" ${this.required(args)}>`;
         return this.formGroupWrap(field);
     }
 

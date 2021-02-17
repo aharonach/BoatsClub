@@ -1,14 +1,16 @@
 const ROOT_PATH = '/boatsclub';
 
-async function ajaxRequest(url, method = 'get', data = false) {
+async function ajaxRequest(url, method = 'GET', data = false) {
     try {
         let params = {
             method: method,
         };
 
+        method = method.toUpperCase();
+
         if (data) {
             data = data instanceof FormData ? formDataToSearchParams(data) : objectToSearchParams(data);
-            if (method === 'post' || method === 'delete') {
+            if (method === 'POST' || method === 'DELETE') {
                 params.body = data;
             } else {
                 url += '?' + data.toString();
@@ -143,6 +145,14 @@ const editLink = (entity, id, label = "Edit") => {
     return `<a class="edit-link" href="${entity}/edit" data-entity="${entity}" data-id="${id}">${label}</a>`;
 }
 
+const editLinks = (entity, ids) => {
+    let output = [];
+    for (const id of ids) {
+        output.push(`<a class="edit-link" href="${entity}/edit" data-entity="${entity}" data-id="${id}">${id}</a>`);
+    }
+    return output.join(", ");
+}
+
 const deleteLink = (entity, id, label = "Delete") => {
     return `<a class="delete-link text-danger" href="${entity}/delete" data-entity="${entity}" data-id="${id}">${label}</a>`;
 }
@@ -161,6 +171,33 @@ document.querySelectorAll('.main-nav-link').forEach(navLink => {
    });
 });
 
+document.addEventListener('click', event => {
+    const el = event.target;
+    if (el.tagName === 'A' && el.href.includes('/delete')) {
+        event.preventDefault();
+        const answer = confirm("Are you sure?");
+
+        if (answer) {
+            let entity = el.dataset.entity,
+                entityId = el.dataset.id;
+
+            ajaxRequest(el.href, 'DELETE', { id: entityId }).then(response => {
+                if (response) {
+                    if (response.status) {
+                        showAlert("success", response.value);
+
+                        // update entity list if it's present
+                        if (document.getElementById(entity + "-list")) {
+                            document.getElementById(entity).click();
+                        }
+                    } else {
+                        showAlert("error", response.error);
+                    }
+                }
+            });
+        }
+    }
+});
 
 /**
  * Edit record with popup
@@ -174,15 +211,17 @@ document.addEventListener('click', event => {
             entityId = el.dataset.id;
 
         ajaxRequest(entity, 'get', { id: entityId }).then(record => {
-            const formName = 'edit-' + entity + '-' + entityId;
-            const form = new Form({
-                id: formName,
-                method: 'post',
-                fields: prepareFormFields(record, formFields),
-                action: el.href,
+            prepareOptions(formFields).then(() => {
+                const formName = 'edit-' + entity + '-' + entityId;
+                const form = new Form({
+                    id: formName,
+                    method: 'post',
+                    fields: prepareFormFields(record, formFields),
+                    action: el.href,
+                });
+                showPopup("edit-entity", "Edit " + entity + " ID " + entityId, form.getHtml() );
+                submitForm(formName, entity);
             });
-            showPopup("edit-entity", "Edit " + entity + " ID " + entityId, form.getHtml() );
-            submitForm(formName, entity);
         });
     }
 });

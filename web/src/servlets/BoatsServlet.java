@@ -25,10 +25,6 @@ public class BoatsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         SessionUtils.checkAdminPermission(req);
 
-        String servletPath = req.getServletPath();
-
-        System.out.println(servletPath + " from get");
-
         Gson gson = new Gson();
         String json = "{}";
 
@@ -57,8 +53,6 @@ public class BoatsServlet extends HttpServlet {
         SessionUtils.checkAdminPermission(req);
 
         String servletPath = req.getServletPath();
-
-        System.out.println(servletPath + " from post");
 
         switch (servletPath) {
             case "/boats/add":
@@ -121,12 +115,22 @@ public class BoatsServlet extends HttpServlet {
 
         String servletPath = req.getServletPath();
 
-        if (!servletPath.equals("/boats/delete")) {
+        if (servletPath.equals("/boats/delete")) {
+            Response response;
             String id = req.getParameter("id");
+            System.out.println(id);
             try {
                 EngineUtils.getBoats(getServletContext()).delete(Integer.parseInt(id));
+                response = new Response(true, "Boat with ID " + id + " deleted with all the orders it was in.");
             } catch (RecordNotFoundException e) {
-                e.printStackTrace();
+                response = new Response(false, e.getMessage());
+            }
+            Gson gson = new Gson();
+            String json = gson.toJson(response);
+
+            try(PrintWriter out = resp.getWriter()) {
+                out.println(json);
+                out.flush();
             }
         }
     }
