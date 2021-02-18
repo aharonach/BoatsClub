@@ -13,6 +13,7 @@ public class Boat extends Entity implements Serializable {
 
     private Type type;
     private String name;
+    private String typeName;
     private boolean isPrivate = false;
     private boolean isWide = false;
     private boolean isCoastal = false;
@@ -37,6 +38,7 @@ public class Boat extends Entity implements Serializable {
         this.setWide(isWide);
         this.setCoastal(isCoastal);
         this.setDisabled(isDisabled);
+        this.typeName = getTypeShortName();
     }
 
     /**
@@ -50,6 +52,7 @@ public class Boat extends Entity implements Serializable {
         this.setId(++idCounter);
         this.setType(type);
         this.setName(name);
+        this.typeName = getTypeShortName();
     }
 
     public Boat(BoatWrapper newBoat) {
@@ -60,6 +63,7 @@ public class Boat extends Entity implements Serializable {
         this.setWide(newBoat.isWide());
         this.setCoastal(newBoat.isCoastal());
         this.setDisabled(newBoat.isDisabled());
+        this.typeName = getTypeShortName();
     }
 
     @Override
@@ -118,6 +122,7 @@ public class Boat extends Entity implements Serializable {
 
     public void setType(Type type) {
         this.type = type;
+        this.typeName = getTypeShortName();
     }
 
     /**
@@ -161,6 +166,7 @@ public class Boat extends Entity implements Serializable {
      */
     public void setWide(boolean wide) {
         isWide = wide;
+        this.typeName = getTypeShortName();
     }
 
     /**
@@ -188,6 +194,7 @@ public class Boat extends Entity implements Serializable {
      */
     public void setCoastal(boolean coastal) {
         isCoastal = coastal;
+        this.typeName = getTypeShortName();
     }
 
     /**

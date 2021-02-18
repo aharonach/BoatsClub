@@ -23,6 +23,8 @@ function getFormFields(entity) {
     switch (entity) {
         case "boats":
             return boatsFormFields;
+        case "activities":
+            return activitiesFormFields;
         case "rowers":
             return rowersFormFields;
     }
@@ -32,7 +34,7 @@ function prepareFormFields(record, formFields) {
     // clone fields
     const newFormFields = JSON.parse(JSON.stringify(formFields));
 
-    for (const field of newFormFields) {
+    for (let field of newFormFields) {
         let value = record[field.id];
         if (value) {
             switch (field.type) {
@@ -57,6 +59,10 @@ function prepareFormFields(record, formFields) {
                     field.selected = value;
                     break;
                 case "password":
+                    field.required = false;
+                    break;
+                case "time":
+                    field.value = formatTime(value);
                     break;
                 default:
                     field.value = value;
@@ -75,7 +81,8 @@ function prepareFormFields(record, formFields) {
 }
 
 async function prepareOptions(fields) {
-    for (const field of fields) {
+    const newFormFields = JSON.parse(JSON.stringify(fields));
+    for (const field of newFormFields) {
         if ((field.type === 'select' || field.type === 'radio') && field.options[0].ajax) {
             const valueField = field.options[0].valueField,
                 labelField = field.options[0].labelField;
@@ -89,9 +96,12 @@ async function prepareOptions(fields) {
                     selected: false
                 });
             }
-            field.options[0].selected = true;
+            if (field.options[0]) {
+                field.options[0].selected = true;
+            }
         }
     }
+    return newFormFields;
 }
 
 class Form {
@@ -119,7 +129,7 @@ class Form {
                 case "textarea":
                     form += this.textareaField(field);
                     break;
-                default: // text, password, email, number
+                default: // text, password, email, number, tel
                     form += this.defaultField(field);
                     break;
             }
@@ -131,11 +141,7 @@ class Form {
 
     selectField(args) {
         let field = this.label(args.id, args.label);
-        field += `<select class="form-control" id="${args.id}" ${args.multiple ? "multiple" : ""}>`;
-        // if (typeof(args.options) === 'string') {
-        //     const list = await (await fetch(args.options)).json();
-        //     args.options = prepareOptions(list);
-        // }
+        field += `<select class="form-control" id="${args.id}" name="${args.id}" ${args.multiple ? "multiple" : ""}>`;
         for (let option of args.options) {
             field += `<option value="${option.value}" ${option.selected ? "selected" : ""}>${option.label}</option>`;
         }
@@ -170,7 +176,7 @@ class Form {
     defaultField(args) {
         let field = args.label ? this.label(args.id, args.label) : '';
         const value = args.value ? args.value : '';
-        field += `<input class="form-control" type="${args.type}" value="${value}" id="${args.id}" name="${args.id}" ${this.required(args)}>`;
+        field += `<input class="form-control" type="${args.type}" ${args.pattern ? "pattern=\"" + args.pattern + "\"" : ""} value="${value}" id="${args.id}" name="${args.id}" placeholder="${args.placeholder ? args.placeholder : ""}" ${this.required(args)}>`;
         return this.formGroupWrap(field);
     }
 

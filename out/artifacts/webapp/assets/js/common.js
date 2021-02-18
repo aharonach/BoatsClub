@@ -1,24 +1,21 @@
 const ROOT_PATH = '/boatsclub';
 
-async function ajaxRequest(url, method = 'GET', data = false) {
+async function ajaxRequest(url, method = 'get', data = false) {
     try {
         let params = {
             method: method,
         };
 
-        method = method.toUpperCase();
-
         if (data) {
             data = data instanceof FormData ? formDataToSearchParams(data) : objectToSearchParams(data);
-            if (method === 'POST' || method === 'DELETE') {
-                params.body = data;
-            } else {
+            if (method === 'get') {
                 url += '?' + data.toString();
+            } else {
+                params.body = data;
             }
         }
 
-        console.log(data.toString());
-        console.log(params);
+        console.log("send data: " + data.toString());
 
         const response = await fetch(url, params);
 
@@ -125,7 +122,7 @@ function formatDate(object) {
 }
 
 function formatTime(object) {
-    return object.hour + ':' + object.minute;
+    return (object.hour < 10 ? "0" + object.hour : object.hour) + ':' + (object.minute < 10 ? "0" + object.minute : object.minute);
 }
 
 function booleanFeather(object) {
@@ -171,6 +168,16 @@ document.querySelectorAll('.main-nav-link').forEach(navLink => {
    });
 });
 
+document.querySelectorAll('.nav-link-dashboard').forEach(navLink => {
+    navLink.addEventListener("click", e => {
+        e.preventDefault();
+        putContent("Dashboard", "");
+    });
+});
+
+/**
+ * Delete Record
+ */
 document.addEventListener('click', event => {
     const el = event.target;
     if (el.tagName === 'A' && el.href.includes('/delete')) {
@@ -181,7 +188,7 @@ document.addEventListener('click', event => {
             let entity = el.dataset.entity,
                 entityId = el.dataset.id;
 
-            ajaxRequest(el.href, 'DELETE', { id: entityId }).then(response => {
+            ajaxRequest(el.href, "post", { id: entityId }).then(response => {
                 if (response) {
                     if (response.status) {
                         showAlert("success", response.value);
@@ -211,12 +218,12 @@ document.addEventListener('click', event => {
             entityId = el.dataset.id;
 
         ajaxRequest(entity, 'get', { id: entityId }).then(record => {
-            prepareOptions(formFields).then(() => {
+            prepareOptions(formFields).then((fields) => {
                 const formName = 'edit-' + entity + '-' + entityId;
                 const form = new Form({
                     id: formName,
                     method: 'post',
-                    fields: prepareFormFields(record, formFields),
+                    fields: prepareFormFields(record, fields),
                     action: el.href,
                 });
                 showPopup("edit-entity", "Edit " + entity + " ID " + entityId, form.getHtml() );

@@ -13,9 +13,12 @@ import exceptions.RecordAlreadyExistsException;
 import exceptions.RecordNotFoundException;
 import wrappers.RowerWrapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+
+import static entities.Rower.yearsUntilExpired;
 
 public class Rowers extends Entities implements RowersController {
 
@@ -36,10 +39,13 @@ public class Rowers extends Entities implements RowersController {
         Validations.isEmail(newRower.getEmailAddress());
         Validations.isFullName(newRower.getName());
         Validations.isValidAge(newRower.getAge());
+        checkPrivateBoat(newRower);
         checkUniqueEmail(newRower);
 
         // Create a new rower in the memory
         Rower rowerToAdd = new Rower(newRower);
+        rowerToAdd.setJoined(LocalDateTime.now());
+        rowerToAdd.setExpired(LocalDateTime.now().plusYears(yearsUntilExpired));
 
         // add to database
         engine().addRecord("rowers", rowerToAdd);
@@ -52,6 +58,8 @@ public class Rowers extends Entities implements RowersController {
 
         // get updated fields (fieldName -> value)
         Map<String, Object> updatedFields = rower.updatedFields();
+
+        checkPrivateBoat((RowerWrapper) rower);
 
         // update all the fields
         for (Map.Entry<String, Object> field : updatedFields.entrySet()) {
@@ -97,6 +105,12 @@ public class Rowers extends Entities implements RowersController {
         return engine().filterList("rowers", condition).values().toArray(new Rower[0]);
     }
 
+    public void checkPrivateBoat(RowerWrapper rower) throws InvalidInputException {
+        if (rower.hasPrivateBoat() && rower.getPrivateBoat() == null) {
+            throw new InvalidInputException("Private boat is not set");
+        }
+    }
+
     @Override
     public void checkUniqueEmail(RowerWrapper rower) throws RecordAlreadyExistsException {
         // Check if the admin updated boat email
@@ -135,5 +149,16 @@ public class Rowers extends Entities implements RowersController {
 
     public Rower getRecord(int id) throws RecordNotFoundException {
         return (Rower) engine().getRecord("rowers", id);
+    }
+
+    public void deletePrivateBoats(int boatId) {
+        Rower[] rowers = filterList(r -> {
+            Rower rowerInList = (Rower) r;
+            return rowerInList.getPrivateBoat() == boatId;
+        });
+
+        for (Rower rower : rowers) {
+            rower.setPrivateBoat(null);
+        }
     }
 }

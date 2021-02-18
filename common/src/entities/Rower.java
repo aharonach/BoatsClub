@@ -35,6 +35,7 @@ public class Rower extends Entity implements Cloneable, Serializable {
         this.setPassword(rower.getPassword());
         this.setIsManager(rower.isManager());
         this.setHasPrivateBoat(rower.hasPrivateBoat());
+        this.setPrivateBoat(rower.getPrivateBoat());
         this.setNotes(rower.getNotes());
     }
 

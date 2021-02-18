@@ -118,7 +118,6 @@ public class BoatsServlet extends HttpServlet {
         if (servletPath.equals("/boats/delete")) {
             Response response;
             String id = req.getParameter("id");
-            System.out.println(id);
             try {
                 EngineUtils.getBoats(getServletContext()).delete(Integer.parseInt(id));
                 response = new Response(true, "Boat with ID " + id + " deleted with all the orders it was in.");

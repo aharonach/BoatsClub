@@ -30,6 +30,8 @@ const rowersFormFields = [
         type: "tel",
         label: "Phone Number",
         required: true,
+        placeholder: "052-1111111",
+        pattern: "[0-9]{3}-[0-9]{7}",
     },
     {
         id: "level",
@@ -125,11 +127,11 @@ document.querySelector('#rowers').addEventListener("click", function(e) {
 
 document.querySelector('#rowers-add').addEventListener("click", function(e) {
     e.preventDefault();
-    prepareOptions(rowersFormFields).then(() => {
+    prepareOptions(rowersFormFields).then((fields) => {
         const form = new Form({
             id: "add-rower",
             method: "post",
-            fields: rowersFormFields,
+            fields: fields,
             action: e.target.href,
         });
         putContent("Add New Rower", form.getHtml());
