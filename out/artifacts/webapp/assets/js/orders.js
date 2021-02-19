@@ -25,13 +25,13 @@ function orderRow(order, showActions = false) {
         row += `<td>${order.id}</td>`;
     }
 
-    row += `<td>${order.rowers}</td>
+    row += `<td>${editLinks("rowers", order.rowers)}</td>
         <td>${order.boatTypes}</td>
         <td>${formatDate(order.activityDate)}</td>
         <td>${formatTime(order.activityStartTime) + ' - ' + formatTime(order.activityEndTime)}</td>
-        <td>${order.registerRower}</td>
-        <td>${order.approvedRequest? 'Approved':'appointed'}</td>
-        <td>${order.boat}</td>
+        <td>${editLink("rowers", order.registerRower, order.registerRower)}</td>
+        <td>${booleanFeather(order.approvedRequest)}</td>
+        <td>${order.boat ? editLink("boats", order.boat, order.boat) : ""}</td>
     </tr>`;
 
     return row;

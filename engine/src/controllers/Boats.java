@@ -78,9 +78,11 @@ public class Boats extends Entities implements BoatsController {
         engine().deleteRecord("boats", boat);
 
         Orders ordersController = (Orders) engine().getController("orders");
+        Rowers rowersController = (Rowers) engine().getController("rowers");
 
         // delete orders with the deleted boat
         ordersController.deleteOrdersWithBoat(id);
+        rowersController.deletePrivateBoats(id);
     }
 
     /**

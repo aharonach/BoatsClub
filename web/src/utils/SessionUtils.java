@@ -23,14 +23,16 @@ public class SessionUtils {
         request.getSession().invalidate();
     }
 
-    public static boolean checkPermissions(HttpServletRequest request) {
+    public static void checkPermissions(HttpServletRequest request) throws ServletException {
         Rower user = getUser(request);
-        return user != null;
+        if (user == null) {
+            throw new ServletException("You don't have permissions");
+        }
     }
 
     public static void checkAdminPermission(HttpServletRequest request) throws ServletException {
         Rower user = getUser(request);
-        if (user != null && !user.isManager()) {
+        if (user == null || !user.isManager()) {
             throw new ServletException("You don't have permissions");
         }
     }
