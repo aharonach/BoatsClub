@@ -16,6 +16,7 @@ async function ajaxRequest(url, method = 'get', data = false) {
         }
 
         console.log("send data: " + data.toString());
+        console.log("url " + url);
 
         const response = await fetch(url, params);
 

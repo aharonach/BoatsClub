@@ -27,6 +27,8 @@ function getFormFields(entity) {
             return activitiesFormFields;
         case "rowers":
             return rowersFormFields;
+        case "orders":
+            return ordersFormFields;
     }
 }
 
@@ -39,9 +41,19 @@ function prepareFormFields(record, formFields) {
         if (value) {
             switch (field.type) {
                 case "select":
-                    for (const option of field.options) {
-                        if (option.value === record[field.id]) {
-                            option.selected = true;
+                    if (field.multiple) {
+                        for (const option of field.options) {
+                            for (const selectedValue of value) {
+                                if (option.value === selectedValue) {
+                                    option.selected = true;
+                                }
+                            }
+                        }
+                    } else {
+                        for (const option of field.options) {
+                            if (option.value === value) {
+                                option.selected = true;
+                            }
                         }
                     }
                     break;
@@ -63,6 +75,9 @@ function prepareFormFields(record, formFields) {
                     break;
                 case "time":
                     field.value = formatTime(value);
+                    break;
+                case "date":
+                    field.value = formatDate(value);
                     break;
                 default:
                     field.value = value;
@@ -126,6 +141,9 @@ class Form {
                 case "radio":
                     form += this.radioField(field);
                     break;
+                case "radio-choices":
+                    form += this.radioFieldMultipleChoice(field);
+                    break;
                 case "textarea":
                     form += this.textareaField(field);
                     break;
@@ -160,6 +178,18 @@ class Form {
 
         for (let option of args.options) {
             let radio = `<input type="radio" class="form-check-input" id="${args.id + "-" + option.value}" name="${args.id}" value="${option.value}" ${option.selected ? "checked" : ""} ${this.required(args)}> <label class="form-check-label" for="${args.id + "-" + option.value}">${option.label}</label>`;
+            field += this.formCheckWrap(radio);
+            i++;
+        }
+        return this.formGroupWrap(field);
+    }
+
+    radioFieldMultipleChoice(args) {
+        let field = this.label("", args.label) + `<div class="w-100"></div>`,
+            i = 1;
+
+        for (let option of args.options) {
+            let radio = `<input type="radio" class="form-check-input" id="${args.id + "-" + option.value}" name="action" value="${option.value}" ${option.selected ? "checked" : ""} ${this.required(args)}> <label class="form-check-label" for="${args.id + "-" + option.value}">${option.label}</label>`;
             field += this.formCheckWrap(radio);
             i++;
         }

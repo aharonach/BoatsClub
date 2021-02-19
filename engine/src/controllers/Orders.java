@@ -148,11 +148,11 @@ public class Orders extends Entities implements OrdersController {
 
     @Override
     public Order[] getList() {
-        if (engine().isAdmin()) {
+//        if (engine().isAdmin()) {
             return engine().getList("orders").values().toArray(new Order[0]);
-        } else {
-            return findOrdersByRower(engine().getUser().getId());
-        }
+//        } else {
+//            return findOrdersByRower(engine().getUser().getId());
+//        }
     }
 
     @Override

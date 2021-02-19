@@ -40,8 +40,8 @@ public class RowersServlet extends HttpServlet {
                 e.printStackTrace();
             }
         } else {
-            Rower[] boats = EngineUtils.getRowers(getServletContext()).getList();
-            json = gson.toJson(boats);
+            Rower[] rowers = EngineUtils.getRowers(getServletContext()).getList();
+            json = gson.toJson(rowers);
         }
 
         try(PrintWriter out = resp.getWriter()) {

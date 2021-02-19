@@ -1,3 +1,50 @@
+const ordersFormFields = [
+    {
+        id: "types",
+        type: "select",
+        label: "Boat Type",
+        required: true,
+        multiple: true,
+        options: [
+            {value: "Single", selected: true, label: "Single"},
+            {value: "Double", selected: false, label: "Double"},
+            {value: "Coxed_Double", selected: false, label: "Coxed Double"},
+            {value: "Pair", selected: false, label: "Pair"},
+            {value: "Coxed_Pair", selected: false, label: "Coxed Pair"},
+            {value: "Four", selected: false, label: "Four"},
+            {value: "Coxed_Four", selected: false, label: "Coxed Four"},
+            {value: "Quad", selected: false, label: "Quad"},
+            {value: "Coxed_Quad", selected: false, label: "Coxed Quad"},
+            {value: "Octuple", selected: false, label: "Octuple"},
+            {value: "Eight", selected: false, label: "Eight"},
+        ],
+    },
+    {
+        id: "rowers",
+        type: "select",
+        options: [
+            {ajax: "rowers", valueField: "id", labelField: "name"}
+        ],
+        label: "Select rowers",
+        required: true,
+        multiple: true,
+    },
+    {
+        id: "wantedActivity",
+        type: "select",
+        options: [
+            {ajax: "activities", valueField: "id", labelField: "title"}
+        ],
+        label: "Select activity",
+        required: true,
+    },
+    {
+        id: "activityDate",
+        type: "date",
+        label: "Practice day (Later than today)",
+        value: "",
+    },
+];
 
 function getOrdersColumns() {
     return {
@@ -12,15 +59,15 @@ function getOrdersColumns() {
     };
 }
 
-function getOrderActions() {
-    return `<span class="actions d-block"><a class="edit-link" href="#">Edit</a> | <a class="delete-link text-danger" href="#">Delete</a>`;
+function getOrderActions(orderId) {
+    return `<span class="actions d-block">${editLink("orders", orderId)} | ${deleteLink("orders", orderId)}</span>`;
 }
 
 function orderRow(order, showActions = false) {
     let row = `<tr>`;
 
     if (showActions) {
-        row += `<td>${order.id} ${getOrderActions()}</span></td>`;
+        row += `<td>${order.id} ${getOrderActions(order.id)}</span></td>`;
     } else {
         row += `<td>${order.id}</td>`;
     }
@@ -45,3 +92,17 @@ document.querySelector('#orders').addEventListener("click", function(e) {
         putContent("Orders", table);
     });
 })
+
+document.querySelector('#orders-add').addEventListener("click", function(e) {
+    e.preventDefault();
+    prepareOptions(ordersFormFields).then((fields) => {
+        const form = new Form({
+            id: "add-order",
+            method: "post",
+            fields: fields,
+            action: e.target.href,
+        });
+        putContent("Add New Order", form.getHtml());
+        submitForm("add-order", "orders");
+    });
+});
