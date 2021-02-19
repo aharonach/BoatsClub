@@ -49,6 +49,7 @@ public class Boats extends Entities implements BoatsController {
         // get updated fields (fieldName -> value)
         Map<String, Object> updatedFields = boat.updatedFields();
 
+
         // update all the fields
         for (Map.Entry<String, Object> field : updatedFields.entrySet()) {
             boatToUpdate.updateField(field.getKey(), field.getValue());

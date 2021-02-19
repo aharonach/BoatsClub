@@ -89,6 +89,9 @@ public class Boat extends Entity implements Serializable {
             case "wide":
                 this.setWide((Boolean) value);
                 break;
+            case "disabled":
+                this.setDisabled((Boolean) value);
+                break;
             default:
         }
     }

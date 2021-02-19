@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @WebServlet(name = "BoatsServlet", urlPatterns = {"/boats", "/boats/edit", "/boats/add", "/boats/delete"})
 public class BoatsServlet extends HttpServlet {
@@ -25,21 +27,22 @@ public class BoatsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         SessionUtils.checkAdminPermission(req);
 
+        Boats controller = EngineUtils.getBoats(getServletContext());
+
         Gson gson = new Gson();
         String json = "{}";
-
         String id = req.getParameter("id");
 
-        if (id != null) {
+        if (id == null) {
+            Boat[] boats = handleFilter(req);
+            json = gson.toJson(boats);
+        } else {
             try {
-                Boat boat = EngineUtils.getBoats(getServletContext()).getRecord(Integer.parseInt(id));
+                Boat boat = controller.getRecord(Integer.parseInt(id));
                 json = gson.toJson(boat);
             } catch (RecordNotFoundException e) {
                 e.printStackTrace();
             }
-        } else {
-            Boat[] boats = EngineUtils.getBoats(getServletContext()).getList();
-            json = gson.toJson(boats);
         }
 
         try(PrintWriter out = resp.getWriter()) {
@@ -142,6 +145,38 @@ public class BoatsServlet extends HttpServlet {
         Boolean isCoastal = Boolean.parseBoolean(req.getParameter("isCoastal"));
         Boolean isDisabled = Boolean.parseBoolean(req.getParameter("isDisabled"));
 
+        System.out.println(isDisabled);
+
         return new BoatWrapper(id, name, type, isPrivate, isWide, isCoastal, isDisabled);
+    }
+
+    protected Boat[] handleFilter(HttpServletRequest req) {
+        Boats controller = EngineUtils.getBoats(getServletContext());
+        String filter = req.getParameter("filterBy");
+        System.out.println(filter);
+        Boat[] boats;
+        switch (filter == null ? "" : filter) {
+            case "type":
+                String type = req.getParameter("type");
+                boats = controller.findBoatsByType(Boat.Type.valueOf(type));
+                break;
+            case "types":
+                String[] types = req.getParameterValues("types");
+                List<Boat.Type> boatTypes = convertToBoatTypeList(types);
+                boats = controller.findBoatsByTypes(boatTypes);
+                break;
+            case "non-private-non-disabled":
+                boats = controller.findBoatByNonPrivateNonDisabled();
+                break;
+            case "":
+            default:
+                boats = controller.getList();
+                break;
+        }
+        return boats;
+    }
+
+    public static List<Boat.Type> convertToBoatTypeList(String[] types) {
+        return Arrays.stream(types).map(Boat.Type::valueOf).collect(Collectors.toList());
     }
 }

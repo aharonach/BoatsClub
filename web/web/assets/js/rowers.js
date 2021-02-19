@@ -54,7 +54,7 @@ const rowersFormFields = [
         id: "privateBoat",
         type: "select",
         options: [
-            {ajax: "boats", valueField: "id", labelField: "name"}
+            {ajax: "boats?filterBy=non-private-non-disabled", valueField: "id", labelField: "name"}
         ],
         label: "Private Boat",
         required: false,
