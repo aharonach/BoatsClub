@@ -156,7 +156,7 @@ public class BoatsServlet extends HttpServlet {
         System.out.println(filter);
         Boat[] boats;
         switch (filter == null ? "" : filter) {
-            case "type":
+            case "type": // /boats?filterBy=types&types=Single&types=Double
                 String type = req.getParameter("type");
                 boats = controller.findBoatsByType(Boat.Type.valueOf(type));
                 break;

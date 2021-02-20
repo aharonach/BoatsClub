@@ -42,6 +42,8 @@ function prepareFormFields(record, formFields) {
             switch (field.type) {
                 case "select":
                     if (field.multiple) {
+                        console.log(value);
+                        console.log(field.options);
                         for (const option of field.options) {
                             for (const selectedValue of value) {
                                 if (option.value === selectedValue) {
@@ -77,7 +79,7 @@ function prepareFormFields(record, formFields) {
                     field.value = formatTime(value);
                     break;
                 case "date":
-                    field.value = formatDate(value);
+                    field.value = formatDate(value, true);
                     break;
                 default:
                     field.value = value;

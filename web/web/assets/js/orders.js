@@ -1,6 +1,6 @@
 const ordersFormFields = [
     {
-        id: "types",
+        id: "boatTypes",
         type: "select",
         label: "Boat Type",
         required: true,
@@ -59,15 +59,23 @@ function getOrdersColumns() {
     };
 }
 
-function getOrderActions(orderId) {
-    return `<span class="actions d-block">${editLink("orders", orderId)} | ${deleteLink("orders", orderId)}</span>`;
+function duplicateLink(orderId, label= "Duplicate") {
+    return `<a class="duplicate-link" href="orders/duplicate" data-entity="orders" data-id="${orderId}">${label}</a>`;
+}
+
+function appointLink(orderId, label= "Appoint") {
+    return `<a class="appoint-link" href="orders/appoint" data-entity="orders" data-id="${orderId}">${label}</a>`;
+}
+
+function getOrderActions(orderId, approved) {
+    return `<span class="actions d-block">${editLink("orders", orderId)} | ${duplicateLink(orderId)}${approved ? "" : " | "+appointLink(orderId)} | ${deleteLink("orders", orderId)}</span>`;
 }
 
 function orderRow(order, showActions = false) {
     let row = `<tr>`;
 
     if (showActions) {
-        row += `<td>${order.id} ${getOrderActions(order.id)}</span></td>`;
+        row += `<td>${order.id} ${getOrderActions(order.id, order.approvedRequest)}</span></td>`;
     } else {
         row += `<td>${order.id}</td>`;
     }

@@ -118,8 +118,12 @@ function tableRows(list, createRowFunction, showActions) {
     return rows;
 }
 
-function formatDate(object) {
-    return object.day + '/' + object.month + '/' + object.year;
+function formatDate(object, forInput = false) {
+    if (forInput) {
+        return object.year + "-" + object.month + "-" + object.day;
+    } else {
+        return object.day + '/' + object.month + '/' + object.year;
+    }
 }
 
 function formatTime(object) {

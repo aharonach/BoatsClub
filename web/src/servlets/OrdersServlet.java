@@ -150,7 +150,7 @@ public class OrdersServlet extends HttpServlet {
 
     private OrderWrapper getParams(int id, HttpServletRequest req) throws RecordNotFoundException {
         List<Boat.Type> boatTypes = new ArrayList<>();
-        for(String boatTypeString: req.getParameterValues("types")) {
+        for(String boatTypeString: req.getParameterValues("boatTypes")) {
             System.out.println(Boat.Type.valueOf(boatTypeString).getMaxCapacity());
             boatTypes.add((Boat.Type.valueOf(boatTypeString)));
         }
