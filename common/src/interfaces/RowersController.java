@@ -16,7 +16,7 @@ public interface RowersController extends Controller {
     RowerWrapper get(int id) throws RecordNotFoundException;
 
     @Override
-    Integer add(Wrapper rower) throws RecordAlreadyExistsException, InvalidInputException;
+    Integer add(Wrapper rower) throws RecordAlreadyExistsException, InvalidInputException, RecordNotFoundException;
 
     @Override
     void update(int id, Wrapper rower) throws RecordAlreadyExistsException, RecordNotFoundException, InvalidInputException;

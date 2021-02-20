@@ -32,7 +32,7 @@ public class Rowers extends Entities implements RowersController {
     }
 
     @Override
-    public Integer add(Wrapper rower) throws RecordAlreadyExistsException, InvalidInputException {
+    public Integer add(Wrapper rower) throws RecordAlreadyExistsException, InvalidInputException, RecordNotFoundException {
         RowerWrapper newRower = (RowerWrapper) rower;
 
         // validations
@@ -47,6 +47,11 @@ public class Rowers extends Entities implements RowersController {
         rowerToAdd.setJoined(LocalDateTime.now());
         rowerToAdd.setExpired(LocalDateTime.now().plusYears(yearsUntilExpired));
 
+        // update the private boat to be a private boat
+        if (rowerToAdd.hasPrivateBoat() && rowerToAdd.getPrivateBoat() != null) {
+            getBoats().getRecord(rowerToAdd.getPrivateBoat()).setPrivate(true);
+        }
+
         // add to database
         engine().addRecord("rowers", rowerToAdd);
         return rowerToAdd.getId();
@@ -55,11 +60,16 @@ public class Rowers extends Entities implements RowersController {
     @Override
     public void update(int id, Wrapper rower) throws RecordAlreadyExistsException, RecordNotFoundException, InvalidInputException {
         Rower rowerToUpdate = getRecord(id);
+        RowerWrapper updatedRower = (RowerWrapper) rower;
 
         // get updated fields (fieldName -> value)
         Map<String, Object> updatedFields = rower.updatedFields();
 
-        checkPrivateBoat((RowerWrapper) rower);
+        checkPrivateBoat(updatedRower);
+
+        if (updatedRower.hasPrivateBoat() && updatedRower.getPrivateBoat() != null) {
+            getBoats().getRecord(updatedRower.getPrivateBoat()).setPrivate(true);
+        }
 
         // update all the fields
         for (Map.Entry<String, Object> field : updatedFields.entrySet()) {

@@ -76,7 +76,7 @@ public class RowersServlet extends HttpServlet {
         try {
             Integer id = controller.add(getParams(0, req));
             response = new Response(true, "Rower with ID " + id + " added successfully");
-        } catch (RecordAlreadyExistsException | InvalidInputException e) {
+        } catch (RecordAlreadyExistsException | InvalidInputException | RecordNotFoundException e) {
             response = new Response(false, e.getMessage());
         }
 
