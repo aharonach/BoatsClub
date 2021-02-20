@@ -48,7 +48,7 @@ function getFormData(formName) {
     return new FormData(loginForm);
 }
 
-function putContent(title, content) {
+function putContent(title, content, toolbar) {
     if (title) {
         const titleEl = document.getElementById("main-title");
         titleEl.innerHTML = title;
@@ -63,8 +63,25 @@ function putContent(title, content) {
         mainEl.appendChild(content);
     }
 
+    const toolbarEl = document.getElementById('toolbar');
+    if (toolbar == null) {
+        toolbarEl.innerHTML = '';
+    } else {
+        if (toolbar !== "") {
+            toolbarEl.innerHTML = '';
+            toolbarEl.innerHTML = toolbar;
+        }
+    }
+
     // create icons if they are presented
     feather.replace();
+}
+
+function toolbarImportExport(entity) {
+    return `<div class="btn-group mr-2">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-entity="${entity}">Import</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-entity="${entity}">Export</button>
+    </div>`;
 }
 
 function showAlert(type, content) {
@@ -119,6 +136,9 @@ function tableRows(list, createRowFunction, showActions) {
 }
 
 function formatDate(object, forInput = false) {
+    object.year = object.year < 10 ? "0" + object.year : object.year;
+    object.month = object.month < 10 ? "0" + object.month : object.month;
+    object.day = object.day < 10 ? "0" + object.day : object.day;
     if (forInput) {
         return object.year + "-" + object.month + "-" + object.day;
     } else {
@@ -212,32 +232,42 @@ document.addEventListener('click', event => {
 });
 
 /**
- * Edit record with popup
+ * Edit/duplicate record with popup
  */
 document.addEventListener('click', event => {
     const el = event.target;
-    if (el.tagName === 'A' && el.href.includes('/edit')) {
+    if (el.tagName === 'A' && (el.href.includes('/edit') || el.href.includes('/duplicate'))) {
         event.preventDefault();
-        let entity = el.dataset.entity,
+        const action = el.href.includes('/duplicate') ? "duplicate" : "edit";
+        const entity = el.dataset.entity,
             formFields = getFormFields(entity),
             entityId = el.dataset.id;
 
         ajaxRequest(entity, 'get', { id: entityId }).then(record => {
-            prepareOptions(formFields).then((fields) => {
-                const formName = 'edit-' + entity + '-' + entityId;
+            prepareOptions(formFields).then(fields => {
+                const formName = action + "-" + entity + '-' + entityId;
                 const form = new Form({
                     id: formName,
                     method: 'post',
                     fields: prepareFormFields(record, fields),
                     action: el.href,
                 });
-                showPopup("edit-entity", "Edit " + entity + " ID " + entityId, form.getHtml() );
+                const title = action.charAt(0).toUpperCase() + action.slice(1);
+                showPopup(action + "-entity",title + " " + entity + " from" + " ID " + entityId, form.getHtml() );
                 submitForm(formName, entity);
+
+                // for orders
+                activityFieldRemove();
             });
         });
     }
 });
 
+/**
+ * Edit and delete form submit
+ * @param formId
+ * @param entity
+ */
 const submitForm = (formId, entity) => {
     const form = document.getElementById(formId);
     form.addEventListener("submit", event => {

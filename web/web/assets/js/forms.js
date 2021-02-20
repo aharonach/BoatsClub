@@ -42,8 +42,7 @@ function prepareFormFields(record, formFields) {
             switch (field.type) {
                 case "select":
                     if (field.multiple) {
-                        console.log(value);
-                        console.log(field.options);
+                        field.options[0].selected = !field.options[0].value;
                         for (const option of field.options) {
                             for (const selectedValue of value) {
                                 if (option.value === selectedValue) {
@@ -85,6 +84,17 @@ function prepareFormFields(record, formFields) {
                     field.value = value;
                     break;
             }
+        } else {
+            switch (field.type) {
+                // case "select":
+                //     if (field.includeEmpty) {
+                //         field.options.unshift({value: "", label: "Select...", selected: true});
+                //     }
+                //     break;
+                case "password":
+                    field.required = false;
+                    break;
+            }
         }
     }
 
@@ -106,6 +116,7 @@ async function prepareOptions(fields) {
 
             const json = await ajaxRequest(field.options[0].ajax);
             field.options = [];
+
             for (const record of json) {
                 field.options.push({
                     value: record[valueField],
@@ -113,7 +124,7 @@ async function prepareOptions(fields) {
                     selected: false
                 });
             }
-            if (field.options[0]) {
+            if (!field.includeEmpty && field.options[0]) {
                 field.options[0].selected = true;
             }
         }
@@ -162,6 +173,9 @@ class Form {
     selectField(args) {
         let field = this.label(args.id, args.label);
         field += `<select class="form-control" id="${args.id}" name="${args.id}" ${args.multiple ? "multiple" : ""}>`;
+        // if (args.includeEmpty) {
+        //     field += `<option value="" selected>Select...</option>`;
+        // }
         for (let option of args.options) {
             field += `<option value="${option.value}" ${option.selected ? "selected" : ""}>${option.label}</option>`;
         }
@@ -208,7 +222,7 @@ class Form {
     defaultField(args) {
         let field = args.label ? this.label(args.id, args.label) : '';
         const value = args.value ? args.value : '';
-        field += `<input class="form-control" type="${args.type}" ${args.pattern ? "pattern=\"" + args.pattern + "\"" : ""} value="${value}" id="${args.id}" name="${args.id}" placeholder="${args.placeholder ? args.placeholder : ""}" ${this.required(args)}>`;
+        field += `<input ${args.readonly ? "readonly" : ""} class="form-control" type="${args.type}" ${args.pattern ? "pattern=\"" + args.pattern + "\"" : ""} value="${value}" id="${args.id}" name="${args.id}" placeholder="${args.placeholder ? args.placeholder : ""}" ${this.required(args)}>`;
         return this.formGroupWrap(field);
     }
 

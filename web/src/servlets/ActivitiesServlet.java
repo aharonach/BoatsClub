@@ -151,11 +151,11 @@ public class ActivitiesServlet extends HttpServlet {
         LocalTime startTime = LocalTime.parse(req.getParameter("startTime"));
         LocalTime endTime = LocalTime.parse(req.getParameter("endTime"));
         Boat.Type type = null;
-        System.out.println(req.getParameter("type"));
-        System.out.println(!req.getParameter("type").equalsIgnoreCase("-1"));
-        if( req.getParameter("type") != null )
-            if (!req.getParameter("type").equalsIgnoreCase("-1"))
-                type = Boat.Type.valueOf(req.getParameter("type"));
+//        System.out.println(req.getParameter("type"));
+//        System.out.println(!req.getParameter("type").equalsIgnoreCase("-1"));
+        if( req.getParameter("boatType") != null )
+            if (!req.getParameter("boatType").equalsIgnoreCase("-1"))
+                type = Boat.Type.valueOf(req.getParameter("boatType"));
 
         return new ActivityWrapper(title, startTime, endTime, type);
     }

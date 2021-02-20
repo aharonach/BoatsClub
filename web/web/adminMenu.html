@@ -36,12 +36,12 @@
                             <span data-feather="file"> </span> Orders
                         </a>
                         <ul class="nav flex-column subnav">
-                            <li class="nav-item"><a id="orders" class="nav-link" href="orders">View All Orders</a></li>
-                            <li class="nav-item"><a id="ordersByDate" class="nav-link" href="#">View Orders By Date</a></li>
-                            <li class="nav-item"><a id="ordersByUser" class="nav-link" href="orders/filterBy=user">View Orders By User</a></li>
-                            <li class="nav-item"><a id="ordersAppointed" class="nav-link" href="orders/filterBy=appointed">View Appointed Orders</a></li>
+                            <li class="nav-item"><a id="orders" class="orders-menu nav-link" data-title="Orders" href="orders">View All Orders</a></li>
+                            <li class="nav-item"><a id="ordersByDate" class="nav-link" data-title="Orders By Date" href="#">View Orders By Date</a></li>
+                            <li class="nav-item"><a id="ordersByUser" class="orders-menu nav-link" data-title="Orders By User" href="orders?filterBy=user">View Orders By User</a></li>
+                            <li class="nav-item"><a id="ordersAppointed" class="orders-menu nav-link" data-title="Appointed Orders" href="orders?filterBy=appointed">View Appointed Orders</a></li>
                             <li class="nav-item"><a id="orders-add" class="nav-link" href="orders/add">Add New Order</a></li>
-                            <li class="nav-item"><a id="orders-appoint" class="nav-link" href="orders/appoint">Appoint Waiting Order</a></li>
+                            <li class="nav-item"><a id="orders-appoint" class="orders-menu nav-link" href="orders?filterBy=non-appointed">Appoint Waiting Order</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -78,12 +78,7 @@
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-1">
                 <h1 id="main-title" class="h2">Dashboard</h1>
-                <div class="btn-toolbar mb-2 mb-md-0">
-                    <div class="btn-group mr-2">
-                        <button type="button" class="btn btn-sm btn-outline-secondary">Import</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
-                    </div>
-                </div>
+                <div id="toolbar" class="btn-toolbar mb-2 mb-md-0"></div>
             </div>
             <div id="feedback" class="d-none alert"></div>
             <div id="main-content" class="main-content"></div>
@@ -97,6 +92,8 @@
 <script type="text/javascript" src="assets/js/common.js"></script>
 <script type="text/javascript" src="assets/js/boats.js"></script>
 <script type="text/javascript" src="assets/js/orders.js"></script>
+<script type="text/javascript" src="assets/js/ordersByDate.js"></script>
+<script type="text/javascript" src="assets/js/ordersActions.js"></script>
 <script type="text/javascript" src="assets/js/rowers.js"></script>
 <script type="text/javascript" src="assets/js/activities.js"></script>
 </body>

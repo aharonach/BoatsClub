@@ -2,6 +2,7 @@ package servlets;
 
 import com.google.gson.Gson;
 import controllers.Rowers;
+import encryption.BCrypt;
 import entities.Rower;
 import exceptions.InvalidInputException;
 import exceptions.RecordAlreadyExistsException;
@@ -142,7 +143,7 @@ public class RowersServlet extends HttpServlet {
         String name = req.getParameter("name");
         Integer age = Integer.parseInt(req.getParameter("age"));
         Rower.Level level = Rower.Level.valueOf(req.getParameter("level"));
-        Boolean hasPrivateBoat = Boolean.parseBoolean(req.getParameter("hasPrivateBoat"));
+        boolean hasPrivateBoat = Boolean.parseBoolean(req.getParameter("hasPrivateBoat"));
         Integer privateBoat = null;
         if (hasPrivateBoat && req.getParameter("privateBoat") != null) {
             privateBoat = Integer.parseInt(req.getParameter("privateBoat"));
@@ -154,6 +155,7 @@ public class RowersServlet extends HttpServlet {
         String password = req.getParameter("password");
 
         return new RowerWrapper(id, name, age, LocalDateTime.now(), level, hasPrivateBoat, privateBoat, phoneNumber,
-                notes, isManager, emailAddress, password, LocalDateTime.now().plusYears(yearsUntilExpired));
+                notes, isManager, emailAddress, BCrypt.hashpw(password, BCrypt.gensalt(12)),
+                LocalDateTime.now().plusYears(yearsUntilExpired));
     }
 }

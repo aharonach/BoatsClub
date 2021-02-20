@@ -10,7 +10,6 @@ import exceptions.RecordNotFoundException;
 import server.Response;
 import utils.EngineUtils;
 import utils.SessionUtils;
-import wrappers.ActivityWrapper;
 import wrappers.OrderWrapper;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -160,10 +159,9 @@ public class OrdersServlet extends HttpServlet {
             rowers.add(Integer.parseInt(rowerString));
         }
 
-        ActivityWrapper wantedActivity = EngineUtils.getActivites(getServletContext()).get(Integer.parseInt(req.getParameter("wantedActivity")));
-        String activityTitle = wantedActivity.getTitle();
-        LocalTime activityStartTime = wantedActivity.getStartTime();
-        LocalTime activityEndTime = wantedActivity.getEndTime();
+        String activityTitle = req.getParameter("activityTitle");
+        LocalTime activityStartTime = LocalTime.parse(req.getParameter("activityStartTime"));
+        LocalTime activityEndTime = LocalTime.parse(req.getParameter("activityEndTime"));
 
         LocalDate activityDate = LocalDate.parse(req.getParameter("activityDate"));
 
