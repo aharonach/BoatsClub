@@ -35,21 +35,20 @@ document.getElementById('ordersByDate').addEventListener('click', (e) => {
     e.preventDefault();
     const el = e.target;
 
-    putContent(el.text, "", ordersByDateFilters());
+    putContent(el.dataset.title, "", ordersByDateFilters());
 
     document.querySelectorAll('a.filter-order').forEach(link => {
         link.addEventListener("click", e => {
             e.preventDefault();
             ajaxRequest(link.href).then(response => {
                 const table = createTable('orders-list', getOrdersColumns(), response, orderRow, true, "orders");
-                putContent(el.text, table, "");
+                putContent(el.dataset.title, table, "");
             });
         });
     });
 
     document.forms.namedItem("filterByDate").addEventListener("submit", e => {
         e.preventDefault();
-        console.log(getFormData("filterByDate").toString());
         ajaxRequest(e.target.action, 'get', getFormData("filterByDate")).then(response => {
             const table = createTable('orders-list', getOrdersColumns(), response, orderRow, true, "orders");
             putContent(el.dataset.title, table, "");

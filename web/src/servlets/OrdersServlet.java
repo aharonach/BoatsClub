@@ -23,31 +23,25 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet(name = "OrdersServlet", urlPatterns = {"/orders","/orders/#", "/orders/edit", "/orders/add", "/orders/delete", "/orders/appoint", "/orders/duplicate", "/orders/merge"})
+@WebServlet(name = "OrdersServlet", urlPatterns = {"/orders", "/orders/edit", "/orders/add", "/orders/delete", "/orders/appoint", "/orders/duplicate", "/orders/merge"})
 public class OrdersServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        SessionUtils.checkAdminPermission(req);
+        SessionUtils.checkPermissions(req);
 
         Gson gson = new Gson();
         String json = "{}";
         String id = req.getParameter("id");
 
-        if (req.getServletPath().equals("/orders/#")) {
-            Order[] orders = handleDateFilter(req);
+        if (id == null) {
+            Order[] orders = handleFilter(req);
             json = gson.toJson(orders);
-        }
-        else {
-            if (id != null) {
-                try {
-                    Order order = EngineUtils.getOrders(getServletContext()).getRecord(Integer.parseInt(id));
-                    json = gson.toJson(order);
-                } catch (RecordNotFoundException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                Order[] orders = handleFilter(req);
-                json = gson.toJson(orders);
+        } else {
+            try {
+                Order order = EngineUtils.getOrders(getServletContext()).getRecord(Integer.parseInt(id));
+                json = gson.toJson(order);
+            } catch (RecordNotFoundException e) {
+                e.printStackTrace();
             }
         }
 
@@ -62,6 +56,7 @@ public class OrdersServlet extends HttpServlet {
         SessionUtils.checkAdminPermission(req);
 
         String servletPath = req.getServletPath();
+        System.out.println(servletPath);
 
         switch (servletPath) {
             case "/orders/add":
@@ -76,23 +71,16 @@ public class OrdersServlet extends HttpServlet {
             case "/orders/appoint":
                 this.appointOrder(req, resp);
                 break;
-            case "orders/duplicate":
+            case "/orders/duplicate":
                 try {
-                    this.duplicateOrder(req,resp);
+                    this.duplicateOrder(req, resp);
                 } catch (RecordNotFoundException e) {
                     e.printStackTrace();
                 }
                 break;
-            case "orders/merge":
+            case "/orders/merge":
                 try {
                     this.mergeOrders(req, resp);
-                } catch (RecordNotFoundException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case "orders/#":
-                try {
-                    this.getOrdersByDate(req, resp);
                 } catch (RecordNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -178,7 +166,7 @@ public class OrdersServlet extends HttpServlet {
 
 
     protected void appointOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        SessionUtils.checkPermissions(req);
+        SessionUtils.checkAdminPermission(req);
 
         Response response;
         Orders controller = EngineUtils.getOrders(getServletContext());
@@ -206,7 +194,9 @@ public class OrdersServlet extends HttpServlet {
     }
 
     protected void duplicateOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, RecordNotFoundException {
-        SessionUtils.checkPermissions(req);
+        SessionUtils.checkAdminPermission(req);
+
+        System.out.println("here");
 
         Response response;
         Orders controller = EngineUtils.getOrders(getServletContext());
@@ -216,13 +206,8 @@ public class OrdersServlet extends HttpServlet {
 
         try {
             EngineUtils.getEngine(getServletContext()).setUser(SessionUtils.getUser(req).getId());
-            if (updatedDuplicate.updatedFields().size() > 0) {
-                controller.duplicateOrder(id, updatedDuplicate);
-                response = new Response(true, "Order with ID " + id + " appointed successfully");
-            }
-            else{
-                response = new Response(true, "Order with ID " + id + " not appointed. (order need to change)");
-            }
+            controller.duplicateOrder(id, updatedDuplicate);
+            response = new Response(true, "Order with ID " + id + " duplicated");
             EngineUtils.getEngine(getServletContext()).setUser(null);
         } catch (InvalidInputException | RecordNotFoundException | CloneNotSupportedException e) {
             response = new Response(false, e.getMessage());
@@ -243,14 +228,11 @@ public class OrdersServlet extends HttpServlet {
         Response response;
         Orders controller = EngineUtils.getOrders(getServletContext());
 
-        System.out.println(req.getParameter("id"));
-        List<Integer> ids = new ArrayList<>();
-        for(String id: req.getParameterValues("id")) {
-            ids.add(Integer.parseInt(id));
-        }
+        System.out.println("order 1: " +Integer.parseInt(req.getParameter("order1")));
+        System.out.println("order 2: " +Integer.parseInt(req.getParameter("order2")));
 
-        OrderWrapper orderToKeep = controller.get(ids.get(0));
-        OrderWrapper orderToMerge = controller.get(ids.get(0));
+        OrderWrapper orderToKeep = controller.get(Integer.parseInt(req.getParameter("order1")));
+        OrderWrapper orderToMerge = controller.get(Integer.parseInt(req.getParameter("order2")));
 
         try {
             EngineUtils.getEngine(getServletContext()).setUser(SessionUtils.getUser(req).getId());
@@ -308,11 +290,10 @@ public class OrdersServlet extends HttpServlet {
             rowers.add(Integer.parseInt(rowerString));
         }
 
+        LocalDate activityDate = LocalDate.parse(req.getParameter("activityDate"));
         String activityTitle = req.getParameter("activityTitle");
         LocalTime activityStartTime = LocalTime.parse(req.getParameter("activityStartTime"));
         LocalTime activityEndTime = LocalTime.parse(req.getParameter("activityEndTime"));
-
-        LocalDate activityDate = LocalDate.parse(req.getParameter("activityDate"));
 
         return new OrderWrapper(id, rowers, activityTitle, activityDate, activityStartTime, activityEndTime,
                 boatTypes, false, null);
@@ -324,10 +305,11 @@ public class OrdersServlet extends HttpServlet {
         Orders controller = EngineUtils.getOrders(getServletContext());
         String filter = req.getParameter("filterBy");
         System.out.println(filter);
+        controller.engine().setUser(SessionUtils.getUser(req).getId());
         Order[] orders;
         switch (filter == null ? "" : filter) {
             case "user":
-                orders = controller.findOrdersByRower(SessionUtils.getUser(req).getId());
+                orders = controller.findOrdersCreatedByRower(SessionUtils.getUser(req).getId());
                 break;
             case "appointed":
                 orders = controller.filterList(o -> ((Order) o).isApprovedRequest());
@@ -335,30 +317,15 @@ public class OrdersServlet extends HttpServlet {
             case "non-appointed":
                 orders = controller.filterList(o -> !((Order) o).isApprovedRequest());
                 break;
-            case "":
-            default:
-                orders = controller.getList();
-                break;
-        }
-        return orders;
-    }
-
-
-    protected Order[] handleDateFilter(HttpServletRequest req) {
-        Orders controller = EngineUtils.getOrders(getServletContext());
-        String filter = req.getParameter("filterBy");
-        System.out.println(filter);
-        Order[] orders;
-        switch (filter == null ? "" : filter) {
             case "today":
                 orders = controller.findOrdersByDate(LocalDate.now());
+                break;
+            case "lastWeek":
+                orders = controller.findOrdersFromLastWeek();
                 break;
             case "date":
                 LocalDate date = LocalDate.parse(req.getParameter("date"));
                 orders = controller.findOrdersByDate(date);
-                break;
-            case "lastWeek":
-                orders = controller.findOrdersFromLastWeek();
                 break;
             case "week":
                 LocalDate fromDate = LocalDate.parse(req.getParameter("date"));
@@ -369,9 +336,7 @@ public class OrdersServlet extends HttpServlet {
                 orders = controller.getList();
                 break;
         }
+        controller.engine().setUser(null);
         return orders;
     }
-
-
 }
-

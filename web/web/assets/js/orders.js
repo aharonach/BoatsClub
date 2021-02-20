@@ -43,7 +43,6 @@ const ordersFormFields = [
         ],
         label: "Select activity",
         required: true,
-        // includeEmpty: true,
     },
     {
         id: "activityTitle",
@@ -71,10 +70,11 @@ const ordersFormFields = [
 function getOrdersColumns() {
     return {
         id: "Id",
-        rowers: "Registered rowers id's",
-        boatTypes: "Boat types",
-        activityDate: "Activity date",
-        activityTime: "Activity time",
+        rowers: "Registered Rowers",
+        boatTypes: "Boat Types",
+        activityTitle: "Activity",
+        activityDate: "Date",
+        activityTime: "Time",
         registeredRower: "Added by",
         status: "Status",
         boat: "Boat appointed"
@@ -94,6 +94,7 @@ function getOrderActions(orderId, approved) {
 }
 
 function orderRow(order, showActions = false) {
+    console.log(order);
     let row = `<tr>`;
 
     if (showActions) {
@@ -104,14 +105,19 @@ function orderRow(order, showActions = false) {
 
     row += `<td>${editLinks("rowers", order.rowers)}</td>
         <td>${order.boatTypes}</td>
+        <td>${order.activityTitle}</td>
         <td>${formatDate(order.activityDate)}</td>
         <td>${formatTime(order.activityStartTime) + ' - ' + formatTime(order.activityEndTime)}</td>
-        <td>${editLink("rowers", order.registerRower, order.registerRower)}</td>
+        <td>${editLink("rowers", order.registerRower, "Rower id " + order.registerRower)} at <br>${formatDateTime(order.registerDate)}</td>
         <td>${booleanFeather(order.approvedRequest)}</td>
         <td>${order.boat ? editLink("boats", order.boat, order.boat) : ""}</td>
     </tr>`;
 
     return row;
+}
+
+const mergeButton = () => {
+    return `<button id="merge-orders-button" class="btn btn-secondary btn-sm">Merge Orders</button>`;
 }
 
 document.querySelectorAll('.orders-menu').forEach(link => {
@@ -121,7 +127,19 @@ document.querySelectorAll('.orders-menu').forEach(link => {
         ajaxRequest(el.href).then(function(response) {
             let table = createTable('orders-list', getOrdersColumns(), response, orderRow, true, "orders");
             console.log(response);
-            putContent(el.dataset.title, table);
+            putContent(el.dataset.title, table, mergeButton());
+            document.getElementById("merge-orders-button").addEventListener("click", e=>{
+                prepareOptions(mergeOrdersFields).then((fields) => {
+                    const form = new Form({
+                        id: "merge-orders-form",
+                        method: "post",
+                        fields: fields,
+                        action: "orders/merge",
+                    });
+                    showPopup("merge-orders-popup", "Merge Orders", form.getHtml());
+                    submitForm("merge-orders-form","orders");
+                });
+            });
         });
     });
 });
@@ -163,7 +181,7 @@ const activityFieldRemove = () => {
         activityStartTime = document.getElementById('activityStartTime'),
         activityEndTime = document.getElementById('activityEndTime');
 
-    if (!selectEl.querySelector('option')) {
+    if (selectEl && !selectEl.querySelector('option')) {
         selectEl.closest('.form-group').remove();
         activityTitle.readOnly = activityStartTime.readOnly = activityEndTime.readOnly = false;
         activityTitle.required = activityStartTime.required = activityEndTime.required = true;

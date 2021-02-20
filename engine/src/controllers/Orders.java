@@ -148,11 +148,11 @@ public class Orders extends Entities implements OrdersController {
 
     @Override
     public Order[] getList() {
-//        if (engine().isAdmin()) {
+        if (engine().isAdmin()) {
             return engine().getList("orders").values().toArray(new Order[0]);
-//        } else {
-//            return findOrdersByRower(engine().getUser().getId());
-//        }
+        } else {
+            return findOrdersByRower(engine().getUser().getId());
+        }
     }
 
     @Override
@@ -169,7 +169,7 @@ public class Orders extends Entities implements OrdersController {
         OrderWrapper orderToDuplicate = get(orderId);
 
         if (duplicated.equals(orderToDuplicate)) {
-            throw new CloneNotSupportedException("Unable to duplicate order");
+            throw new CloneNotSupportedException("The order needs to change for duplication.");
         }
 
         Order originalOrder = getRecord(orderId);
