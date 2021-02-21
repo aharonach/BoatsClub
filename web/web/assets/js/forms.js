@@ -147,10 +147,10 @@ class Form {
         this.action = args.action;
         this.fields = args.fields;
 
-        let onSubmit = args.onsubmit ? `onsubmit="${args.onsubmit}()"` : '';
         let submitLabel = args.submitLabel ? args.submitLabel : "Submit";
+        let multipart = args.multipart ? 'enctype="multipart/form-data"' : "";
 
-        let form = `<form id="${this.id}" name="${this.id}" method="${this.method}" action="${this.action}" ${onSubmit}>`;
+        let form = `<form id="${this.id}" name="${this.id}" method="${this.method}" action="${this.action}" ${multipart}>`;
         for (let field of this.fields) {
             switch (field.type) {
                 case "select":
@@ -167,6 +167,9 @@ class Form {
                     break;
                 case "textarea":
                     form += this.textareaField(field);
+                    break;
+                case "file":
+                    form += this.fileField(field);
                     break;
                 default: // text, password, email, number, tel
                     form += this.defaultField(field);
@@ -224,6 +227,12 @@ class Form {
         let field = this.label(args.id, args.label);
         const value = args.value ? args.value : '';
         field += `<textarea class="form-control" id="${args.id}" name="${args.id}" ${this.required(args)}>${value}</textarea>`;
+        return this.formGroupWrap(field);
+    }
+
+    fileField(args) {
+        let field = args.label ? this.label(args.id, args.label) : '';
+        field += `<input type="file" class="form-control-file" id="${args.id}" name="${args.id}" ${this.required(args)}>`;
         return this.formGroupWrap(field);
     }
 

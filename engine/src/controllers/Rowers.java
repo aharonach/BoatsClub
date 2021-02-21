@@ -164,7 +164,7 @@ public class Rowers extends Entities implements RowersController {
     public void deletePrivateBoats(int boatId) {
         Rower[] rowers = filterList(r -> {
             Rower rowerInList = (Rower) r;
-            return rowerInList.getPrivateBoat() == boatId;
+            return rowerInList.getPrivateBoat() != null && rowerInList.getPrivateBoat() == boatId;
         });
 
         for (Rower rower : rowers) {

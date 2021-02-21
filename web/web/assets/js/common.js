@@ -1,12 +1,14 @@
 const ROOT_PATH = '/boatsclub';
 
-async function ajaxRequest(url, method = 'get', data = false) {
+async function ajaxRequest(url, method = 'get', data = false, multipart = false) {
     try {
         let params = {
             method: method,
         };
 
-        if (data) {
+        if (multipart) {
+            params.body = data;
+        } else if (data) {
             data = data instanceof FormData ? formDataToSearchParams(data) : objectToSearchParams(data);
             if (method === 'get') {
                 url += '?' + data.toString();
@@ -77,14 +79,7 @@ function putContent(title, content, toolbar) {
     feather.replace();
 }
 
-function toolbarImportExport(entity) {
-    return `<div class="btn-group mr-2">
-        <button type="button" class="btn btn-sm btn-outline-secondary" data-entity="${entity}">Import</button>
-        <button type="button" class="btn btn-sm btn-outline-secondary" data-entity="${entity}">Export</button>
-    </div>`;
-}
-
-function showAlert(type, content) {
+function showAlert(type, content, seconds = 5000) {
     const feedback = document.getElementById('feedback');
     feedback.classList.remove('d-none');
     switch (type) {
@@ -109,7 +104,7 @@ function showAlert(type, content) {
     setTimeout(function() {
         feedback.innerHTML = '';
         feedback.classList.add('d-none');
-    }, 5000);
+    }, seconds);
 }
 
 function createTable(id, columns, list, createRowFunction, showActions = false, menuItem) {
@@ -267,12 +262,13 @@ document.addEventListener('click', event => {
  * Edit and delete form submit
  * @param formId
  * @param entity
+ * @param multipart
  */
-const submitForm = (formId, entity) => {
+const submitForm = (formId, entity, multipart = false) => {
     const form = document.getElementById(formId);
     form.addEventListener("submit", event => {
         event.preventDefault();
-        ajaxRequest(form.action, form.method, new FormData(form)).then(response => {
+        ajaxRequest(form.action, form.method, new FormData(form), multipart).then(response => {
             // Close opened popups
             const popups = document.getElementsByClassName('modal');
             Array.prototype.forEach.call(popups, function(el) {
@@ -280,15 +276,23 @@ const submitForm = (formId, entity) => {
             });
 
             if (response) {
-                if (response.status) {
-                    showAlert("success", response.value);
-
-                    // update entity list if it's present
-                    if (document.getElementById(entity + "-list")) {
-                        document.getElementById(entity).click();
+                let updateList = false;
+                if (typeof(response.status) === 'undefined') {
+                    if (response.value instanceof Array) {
+                        response.value = response.value.join("<br>");
                     }
+                    showAlert("info", response.value, 10000);
+                    updateList = true;
+                } else if (response.status) {
+                    showAlert("success", response.value);
+                    updateList = true;
                 } else {
                     showAlert("error", response.error);
+                }
+
+                // update entity list if it's present
+                if (updateList && document.getElementById(entity + "-list")) {
+                    document.getElementById(entity).click();
                 }
             }
         });

@@ -4,6 +4,7 @@ import entities.Rower;
 import exceptions.AlreadyLoggedInException;
 
 import javax.security.auth.login.CredentialNotFoundException;
+import java.io.File;
 import java.util.List;
 
 public interface Engine {
@@ -12,6 +13,8 @@ public interface Engine {
     void logout();
 
     String exportRecords(String entityType);
+
+    File exportRecordsToFile(String entityType, String filepath);
 
     List<String> importRecords(String entityType, String fileContents, boolean override);
 }

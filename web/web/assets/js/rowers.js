@@ -121,7 +121,7 @@ document.querySelector('#rowers').addEventListener("click", function(e) {
     e.preventDefault();
     ajaxRequest(e.target.href).then(function(response) {
         let table = createTable('rowers-list', getRowersColumns(), response, rowerRow, true, 'rowers');
-        putContent("Rowers", table);
+        putContent("Rowers", table, toolbarImportExport("rowers"));
     });
 });
 
@@ -134,7 +134,7 @@ document.querySelector('#rowers-add').addEventListener("click", function(e) {
             fields: fields,
             action: e.target.href,
         });
-        putContent("Add New Rower", form.getHtml());
+        putContent("Add New Rower", form.getHtml(), toolbarImportExport("rowers"));
         submitForm("add-rower", "rowers");
     });
 });

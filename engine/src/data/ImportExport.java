@@ -30,8 +30,6 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +38,7 @@ import java.util.Scanner;
 public class ImportExport {
 
     private final static String JAXB_PACKAGE = "jaxb";
-    private final static String SCHEME_LOCATION_PREFIX = "resources/";
+    private final static String SCHEME_LOCATION_PREFIX = System.getProperty("user.dir").replace("bin", "webapps") + "/boatsclub-resources/";
 
     public ImportExport() {}
 
@@ -234,25 +232,50 @@ public class ImportExport {
         feedback.add("\nSummary:\n" + count + " Activities imported.");
     }
 
+    private File exportRecordsToFile(String entityType, String filepath) throws IOException, JAXBException,
+            SAXException {
+        String filePath = filepath == null ? "" : filepath.concat("/");
+        File file = exportToFile(filePath.concat(entityType.concat(String.valueOf(System.currentTimeMillis())).concat(".xml")));
+        // create temp file
+        switch (entityType) {
+            case "rowers":
+                exportMembers(file);
+                break;
+            case "boats":
+                exportBoats(file);
+                break;
+            case "activities":
+                exportActivities(file);
+                break;
+        }
+        return file;
+    }
+
     /**
      * Export entities
      */
+    public File exportProcessToFile(String entityType, String filepath) {
+        try {
+            return exportRecordsToFile(entityType, filepath);
+        } catch (JAXBException e) {
+            if (e.getLinkedException() != null) {
+                System.out.println("Error export: " + e.getLinkedException().getMessage());
+            } else {
+                System.out.println("Error export: " + e.getMessage());
+            }
+        } catch (IOException | SAXException e) {
+            System.out.println("Error export: " + e.getMessage());
+        }
+        return null;
+    }
 
+    /**
+     * Export entities
+     */
     public String exportProcess(String entityType) {
         String exported = null;
         try {
-            File file = exportToFile(entityType.concat(String.valueOf(System.currentTimeMillis())).concat(".xml")); // create temp file
-            switch (entityType) {
-                case "rowers":
-                    exportMembers(file);
-                    break;
-                case "boats":
-                    exportBoats(file);
-                    break;
-                case "activities":
-                    exportActivities(file);
-                    break;
-            }
+            File file = exportRecordsToFile(entityType, null);
             exported = readContentFromFile(file);
             file.delete();
         } catch (JAXBException e) {

@@ -77,7 +77,7 @@ document.querySelector('#activities').addEventListener("click", function (e) {
     e.preventDefault();
     ajaxRequest(e.target.href).then(function (response) {
         let table = createTable('activities-list', getActivitiesColumns(), response, activityRow, true, 'activities');
-        putContent("Activities", table);
+        putContent("Activities", table, toolbarImportExport("activities"));
     });
 })
 
@@ -89,6 +89,6 @@ document.querySelector('#activities-add').addEventListener("click", function(e) 
         fields: activitiesFormFields,
         action: e.target.href,
     });
-    putContent("Add New activity", form.getHtml());
+    putContent("Add New activity", form.getHtml(), toolbarImportExport("activities"));
     submitForm("add-activity", "activities");
 });

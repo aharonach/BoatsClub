@@ -4,16 +4,15 @@ import java.io.Serializable;
 
 public class Response implements Serializable {
     String error = null;
-    Object value;
-    boolean status;
+    Object value = null;
+    Boolean status;
 
-    public Response(boolean status, Object value){
+    public Response(Boolean status, Object value){
         this.status = status;
-        if (this.status) {
+        if (this.status == null || this.status) {
             this.value = value;
         } else {
             this.error = (String) value;
-            this.value = null;
         }
     }
 

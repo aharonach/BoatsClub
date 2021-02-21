@@ -14,6 +14,7 @@ import exceptions.AlreadyLoggedInException;
 import exceptions.RecordNotFoundException;
 
 import javax.security.auth.login.CredentialNotFoundException;
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -207,6 +208,12 @@ public class BCEngine implements Engine {
     public String exportRecords(String entityType) {
         ImportExport exporter = new ImportExport();
         return exporter.exportProcess(entityType);
+    }
+
+    @Override
+    public File exportRecordsToFile(String entityType, String filepath) {
+        ImportExport exporter = new ImportExport();
+        return exporter.exportProcessToFile(entityType, filepath);
     }
 
     @Override
