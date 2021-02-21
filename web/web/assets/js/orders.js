@@ -23,7 +23,7 @@ const ordersFormFields = [
         id: "rowers",
         type: "select",
         options: [
-            {ajax: "rowers", valueField: "id", labelField: "name"}
+            {ajax: "rowers", valueField: "id", labelField: "id+name"}
         ],
         label: "Select rowers",
         required: true,
@@ -103,7 +103,7 @@ function orderRow(order, showActions = false) {
         row += `<td>${order.id}</td>`;
     }
 
-    row += `<td>${editLinks("rowers", order.rowers)}</td>
+    row += `<td>${order.rowers.length} Rowers<br>${editLinks("rowers", order.rowers)}</td>
         <td>${order.boatTypes}</td>
         <td>${order.activityTitle}</td>
         <td>${formatDate(order.activityDate)}</td>

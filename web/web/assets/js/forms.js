@@ -112,18 +112,26 @@ async function prepareOptions(fields) {
     for (const field of newFormFields) {
         if ((field.type === 'select' || field.type === 'radio') && field.options[0].ajax) {
             const valueField = field.options[0].valueField,
-                labelField = field.options[0].labelField;
+                labelField = field.options[0].labelField.split("+");
 
             const json = await ajaxRequest(field.options[0].ajax);
             field.options = [];
 
             for (const record of json) {
+                let finalLabel = [];
+                for (const label of labelField) {
+                    finalLabel.push(record[label]);
+                }
+
+                finalLabel = finalLabel.join(": ");
+
                 field.options.push({
                     value: record[valueField],
-                    label: record[labelField],
+                    label: finalLabel,
                     selected: false
                 });
             }
+
             if (!field.includeEmpty && field.options[0]) {
                 field.options[0].selected = true;
             }

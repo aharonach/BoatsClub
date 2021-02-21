@@ -177,10 +177,9 @@ public class OrdersServlet extends HttpServlet {
         try {
             EngineUtils.getEngine(getServletContext()).setUser(SessionUtils.getUser(req).getId());
             controller.appointBoatToOrder(boatId, id);
-            controller.update(id, getParams(id, req));
             response = new Response(true, "Order with ID " + id + " appointed successfully");
             EngineUtils.getEngine(getServletContext()).setUser(null);
-        } catch (RecordAlreadyExistsException | InvalidInputException | RecordNotFoundException e) {
+        } catch (InvalidInputException | RecordNotFoundException e) {
             response = new Response(false, e.getMessage());
         }
 
@@ -252,32 +251,6 @@ public class OrdersServlet extends HttpServlet {
         }
     }
 
-
-    protected void getOrdersByDate(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, RecordNotFoundException {
-        SessionUtils.checkPermissions(req);
-        Response response;
-        Orders controller = EngineUtils.getOrders(getServletContext());
-
-        int id = Integer.parseInt(req.getParameter("id"));
-
-        try {
-            EngineUtils.getEngine(getServletContext()).setUser(SessionUtils.getUser(req).getId());
-            controller.update(id, getParams(id, req));
-            response = new Response(true, "Order updated successfully");
-            EngineUtils.getEngine(getServletContext()).setUser(null);
-        } catch (InvalidInputException | RecordNotFoundException | RecordAlreadyExistsException e) {
-            response = new Response(false, e.getMessage());
-        }
-
-        Gson gson = new Gson();
-        String json = gson.toJson(response);
-
-        try(PrintWriter out = resp.getWriter()) {
-            out.println(json);
-            out.flush();
-        }
-    }
-
     private OrderWrapper getParams(int id, HttpServletRequest req) throws RecordNotFoundException {
         List<Boat.Type> boatTypes = new ArrayList<>();
         for(String boatTypeString: req.getParameterValues("boatTypes")) {
@@ -298,8 +271,6 @@ public class OrdersServlet extends HttpServlet {
         return new OrderWrapper(id, rowers, activityTitle, activityDate, activityStartTime, activityEndTime,
                 boatTypes, false, null);
     }
-
-
 
     protected Order[] handleFilter(HttpServletRequest req) {
         Orders controller = EngineUtils.getOrders(getServletContext());
