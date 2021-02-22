@@ -91,7 +91,7 @@ document.querySelector('#boats').addEventListener("click", function(e) {
     e.preventDefault();
     ajaxRequest(e.target.href).then(function(response) {
         let table = createTable('boats-list', getBoatsColumns(), response, boatRow, true , 'boats');
-        putContent("Boats", table);
+        putContent("Boats", table, toolbarImportExport("boats"));
     });
 });
 
@@ -103,6 +103,6 @@ document.querySelector('#boats-add').addEventListener("click", function(e) {
         fields: boatsFormFields,
         action: e.target.href,
     });
-    putContent("Add New Boat", form.getHtml());
+    putContent("Add New Boat", form.getHtml(), toolbarImportExport("boats"));
     submitForm("add-boat", "boats");
 });
