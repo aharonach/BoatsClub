@@ -28,7 +28,6 @@ public class OrdersServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         SessionUtils.checkPermissions(req);
-
         Gson gson = new Gson();
         String json = "{}";
         String id = req.getParameter("id");
@@ -53,7 +52,7 @@ public class OrdersServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        SessionUtils.checkAdminPermission(req);
+        SessionUtils.checkPermissions(req);
 
         String servletPath = req.getServletPath();
         System.out.println(servletPath);

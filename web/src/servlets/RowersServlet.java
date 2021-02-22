@@ -22,11 +22,11 @@ import java.time.LocalDateTime;
 
 import static entities.Rower.yearsUntilExpired;
 
-@WebServlet(name = "RowersServlet", urlPatterns = {"/rowers", "/rowers/edit", "/rowers/add", "/rowers/delete"})
+@WebServlet(name = "RowersServlet", urlPatterns = {"/rowers", "/rowers/edit", "/rowers/add", "/rowers/delete", "/rowers/getUser"})
 public class RowersServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        SessionUtils.checkAdminPermission(req);
+        SessionUtils.checkPermissions(req);
 
         Gson gson = new Gson();
         String json = "{}";
@@ -41,7 +41,19 @@ public class RowersServlet extends HttpServlet {
                 e.printStackTrace();
             }
         } else {
-            Rower[] rowers = EngineUtils.getRowers(getServletContext()).getList();
+            Rower[] rowers = new Rower[0];
+            try {
+                EngineUtils.getEngine(getServletContext()).setUser(SessionUtils.getUser(req).getId());
+                if(req.getServletPath().equals("/rowers/getUser")){
+                    rowers = EngineUtils.getRowers(getServletContext()).getUser();
+                }
+                else{
+                    rowers = EngineUtils.getRowers(getServletContext()).getList();
+                }
+                EngineUtils.getEngine(getServletContext()).setUser(null);
+            } catch (RecordNotFoundException e) {
+                e.printStackTrace();
+            }
             json = gson.toJson(rowers);
         }
 

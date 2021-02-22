@@ -25,7 +25,7 @@ import java.time.LocalTime;
 public class ActivitiesServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        SessionUtils.checkAdminPermission(req);
+        SessionUtils.checkPermissions(req);
 
         String servletPath = req.getServletPath();
 

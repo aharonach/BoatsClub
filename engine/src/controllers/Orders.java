@@ -114,6 +114,7 @@ public class Orders extends Entities implements OrdersController {
 
     @Override
     public void update(int id, Wrapper order) throws RecordAlreadyExistsException, RecordNotFoundException, InvalidInputException {
+
         OrderWrapper updatedOrder = (OrderWrapper) order;
 
         validateOrder(updatedOrder);

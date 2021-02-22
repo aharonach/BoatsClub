@@ -25,7 +25,7 @@ public interface RowersController extends Controller {
     void delete(int id) throws RecordNotFoundException;
 
     @Override
-    Rower[] getList();
+    Rower[] getList() throws RecordNotFoundException;
 
     @Override
     Rower[] filterList(Predicate<? super Entity> condition);

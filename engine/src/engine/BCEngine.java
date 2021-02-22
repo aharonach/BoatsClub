@@ -9,6 +9,7 @@ import entities.Entity;
 import entities.Rower;
 import interfaces.Controller;
 import interfaces.Engine;
+import sun.security.util.Password;
 import utils.Utils;
 import exceptions.AlreadyLoggedInException;
 import exceptions.RecordNotFoundException;
@@ -185,6 +186,8 @@ public class BCEngine implements Engine {
         for (Entity entry : getList("rowers").values()) {
             Rower rower = (Rower) entry;
             if (rower.getEmailAddress().equalsIgnoreCase(email)) {
+                System.out.println("PASSWORD: " + password);
+                System.out.println("ROWER PASSWORD: " + rower.getPassword());
                 if (BCrypt.checkpw(password, rower.getPassword())) {
                     ActiveUsers.addActiveUser(rower.getId());
                     return rower;

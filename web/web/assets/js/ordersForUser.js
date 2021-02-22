@@ -25,7 +25,7 @@ const ordersFormFields = [
         options: [
             {ajax: "rowers", valueField: "id", labelField: "name"}
         ],
-        label: "Select rowers",
+        label: "Select Yourself + optional rowers",
         required: true,
         multiple: true,
     },
@@ -75,22 +75,14 @@ function getOrdersColumns() {
         activityTitle: "Activity",
         activityDate: "Date",
         activityTime: "Time",
-        registeredRower: "Added by",
+        // registeredRower: "Added by",
         status: "Status",
         boat: "Boat appointed"
     };
 }
 
-function duplicateLink(orderId, label= "Duplicate") {
-    return `<a class="duplicate-link" href="orders/duplicate" data-entity="orders" data-id="${orderId}">${label}</a>`;
-}
-
-function appointLink(orderId, label= "Appoint") {
-    return `<a class="appoint-link" href="orders/appoint" data-entity="orders" data-id="${orderId}">${label}</a>`;
-}
-
 function getOrderActions(orderId, approved) {
-    return `<span class="actions d-block">${editLink("orders", orderId)} | ${duplicateLink(orderId)}${approved ? "" : " | "+appointLink(orderId)} | ${deleteLink("orders", orderId)}</span>`;
+    return `<span class="actions d-block"> ${editLink("orders", orderId)}</span>`;
 }
 
 function orderRow(order, showActions = false) {
@@ -108,16 +100,11 @@ function orderRow(order, showActions = false) {
         <td>${order.activityTitle}</td>
         <td>${formatDate(order.activityDate)}</td>
         <td>${formatTime(order.activityStartTime) + ' - ' + formatTime(order.activityEndTime)}</td>
-        <td>${editLink("rowers", order.registerRower, "Rower id " + order.registerRower)} at <br>${formatDateTime(order.registerDate)}</td>
         <td>${booleanFeather(order.approvedRequest)}</td>
         <td>${order.boat ? editLink("boats", order.boat, order.boat) : ""}</td>
     </tr>`;
 
     return row;
-}
-
-const mergeButton = () => {
-    return `<button id="merge-orders-button" class="btn btn-secondary btn-sm">Merge Orders</button>`;
 }
 
 document.querySelectorAll('.orders-menu').forEach(link => {
@@ -127,19 +114,10 @@ document.querySelectorAll('.orders-menu').forEach(link => {
         ajaxRequest(el.href).then(function(response) {
             let table = createTable('orders-list', getOrdersColumns(), response, orderRow, true, "orders");
             console.log(response);
-            putContent(el.dataset.title, table, mergeButton());
-            document.getElementById("merge-orders-button").addEventListener("click", e=>{
-                prepareOptions(mergeOrdersFields).then((fields) => {
-                    const form = new Form({
-                        id: "merge-orders-form",
-                        method: "post",
-                        fields: fields,
-                        action: "orders/merge",
-                    });
-                    showPopup("merge-orders-popup", "Merge Orders", form.getHtml());
-                    submitForm("merge-orders-form","orders");
-                });
-            });
+            putContent(el.dataset.title, table, "");
         });
     });
 });
+
+
+

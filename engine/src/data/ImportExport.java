@@ -261,13 +261,13 @@ public class ImportExport {
             } else {
                 System.out.println("Error export: " + e.getMessage());
             }
-        } catch (IOException | SAXException e) {
+        } catch (IOException | SAXException | RecordNotFoundException e) {
             System.out.println("Error export: " + e.getMessage());
         }
         return exported;
     }
 
-    private void exportMembers(File file) throws JAXBException, SAXException {
+    private void exportMembers(File file) throws JAXBException, SAXException, RecordNotFoundException {
         Rowers controller = (Rowers) BCEngine.instance().getController("rowers");
         Rower[] rowers = controller.getList();
         if (rowers.length == 0)

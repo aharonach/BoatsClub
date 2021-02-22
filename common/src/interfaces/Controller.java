@@ -50,7 +50,7 @@ public interface Controller {
      *
      * @return array of records from entity
      */
-    Entity[] getList();
+    Entity[] getList() throws RecordNotFoundException;
 
     /**
      * Filter a list and return array of filtered records

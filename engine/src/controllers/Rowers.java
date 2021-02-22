@@ -14,6 +14,7 @@ import exceptions.RecordNotFoundException;
 import wrappers.RowerWrapper;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -108,6 +109,12 @@ public class Rowers extends Entities implements RowersController {
     @Override
     public Rower[] getList() {
         return engine().getList("rowers").values().toArray(new Rower[0]);
+    }
+
+    public Rower[] getUser() throws RecordNotFoundException {
+        Rower[] rowers = new Rower[1];
+        rowers[0] = getRecord(engine().getUser().getId());
+        return rowers;
     }
 
     @Override
