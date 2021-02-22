@@ -2,9 +2,14 @@ package servlets;
 
 import com.google.gson.Gson;
 import controllers.Boats;
+import controllers.Orders;
 import data.Notifications;
 import entities.Boat;
+import entities.Order;
+import exceptions.InvalidInputException;
+import exceptions.RecordAlreadyExistsException;
 import exceptions.RecordNotFoundException;
+import server.Response;
 import utils.EngineUtils;
 import utils.SessionUtils;
 
@@ -24,13 +29,19 @@ public class NotificationsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         SessionUtils.checkAdminPermission(req);
 
-        Gson gson = new Gson();
-        String json = "{}";
         String id = req.getParameter("id");
+        Gson gson = new Gson();
+        Map<Integer, List<String>> notifications;
+        List<String> userNotifications;
+        String json = "{}";
 
-        final Map<Integer, List<String>> notifications = Notifications.getNotifications();
-        json = gson.toJson(notifications);
-
+        if (id == null) {
+            notifications = Notifications.getAllNotifications();
+            json = gson.toJson(notifications);
+        } else {
+            userNotifications = Notifications.getUserNotifications(Integer.parseInt(id));
+            json = gson.toJson(userNotifications);
+        }
 
         try (PrintWriter out = resp.getWriter()) {
             out.println(json);
@@ -38,22 +49,64 @@ public class NotificationsServlet extends HttpServlet {
         }
     }
 
-//    @Override
-//    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        SessionUtils.checkPermissions(req);
-//
-//        String servletPath = req.getServletPath();
-//        System.out.println(servletPath);
-//
-//        switch (servletPath) {
-//            case "/notifications/auto":
-//                this.addNotificationForAll(req, resp);
-//                break;
-//            case "/orders/edit":
-//                this.addNotificationToUser(req, resp);
-//                break;
-//        }
-//    }
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        SessionUtils.checkAdminPermission(req);
+
+        String servletPath = req.getServletPath();
+        System.out.println(servletPath);
+
+        switch (servletPath) {
+            case "/notifications/auto":
+                try {
+                    this.addNotification(req, resp);
+                } catch (RecordNotFoundException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case "/notifications/manual":
+                this.addNotificationToAllUsers(req, resp);
+                break;
+        }
+    }
+
+    protected void addNotification(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, RecordNotFoundException {
+        SessionUtils.checkAdminPermission(req);
+
+        Response response;
+
+        Integer orderId = Integer.parseInt(req.getParameter("orderId"));
+        String message = req.getParameter("message");
+
+        Notifications.addNotificationAuto(orderId, message);
+        response = new Response(true, "Notification to rowers with order ID " + orderId + " sent successfully");
+
+        Gson gson = new Gson();
+        String json = gson.toJson(response);
+
+        try(PrintWriter out = resp.getWriter()) {
+            out.println(json);
+            out.flush();
+        }
+    }
+
+    protected void addNotificationToAllUsers(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        SessionUtils.checkAdminPermission(req);
+
+        Response response;
+        String message = req.getParameter("message");
+
+        Notifications.addNotificationToAllUsers(message);
+        response = new Response(true, "Notification to all Rowers added successfully");
+
+        Gson gson = new Gson();
+        String json = gson.toJson(response);
+
+        try(PrintWriter out = resp.getWriter()) {
+            out.println(json);
+            out.flush();
+        }
+    }
 
 
 }

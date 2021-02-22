@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class Database {
     private static final String[] entityTypes = {"boats", "rowers", "activities", "orders"};
-    private static Map<String, Map<Integer, Entity>> database;
+    protected static Map<String, Map<Integer, Entity>> database;
 
 
     public Database() {

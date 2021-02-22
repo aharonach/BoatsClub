@@ -1,5 +1,6 @@
 package controllers;
 
+import data.Notifications;
 import engine.BCEngine;
 import entities.Boat;
 import entities.Entity;
@@ -13,6 +14,7 @@ import exceptions.RecordAlreadyExistsException;
 import exceptions.RecordNotFoundException;
 import wrappers.RowerWrapper;
 
+import javax.management.Notification;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -55,6 +57,7 @@ public class Rowers extends Entities implements RowersController {
 
         // add to database
         engine().addRecord("rowers", rowerToAdd);
+        Notifications.addUser(rowerToAdd.getId());
         return rowerToAdd.getId();
     }
 
@@ -104,6 +107,7 @@ public class Rowers extends Entities implements RowersController {
         }
 
         engine().deleteRecord("rowers", rower);
+        Notifications.removeUser(rower.getId());
     }
 
     @Override

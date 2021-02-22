@@ -15,7 +15,6 @@ public class ContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        System.out.println("CONTEXT LISTENER");
         ServletContext context = servletContextEvent.getServletContext();
         context.setAttribute(ENGINE_ATTRIBUTE_NAME, BCEngine.instance());
         context.setAttribute(NOTIFICATIONS_ATTRIBUTE_NAME, BCEngine.instance());

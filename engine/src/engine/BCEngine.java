@@ -1,9 +1,6 @@
 package engine;
 
-import data.ActiveUsers;
-import data.Database;
-import data.ImportExport;
-import data.XMLDatabase;
+import data.*;
 import encryption.BCrypt;
 import entities.Entity;
 import entities.Rower;
@@ -56,6 +53,7 @@ public class BCEngine implements Engine {
     private BCEngine() {
         this.database = new Database();
         this.xmlDatabase = new XMLDatabase(this.database);
+        new Notifications(database.get("rowers").values().toArray(new Rower[0]));
 
         // Init controllers
         controllers = new HashMap<>(Database.getEntityTypes().length);
@@ -187,8 +185,6 @@ public class BCEngine implements Engine {
         for (Entity entry : getList("rowers").values()) {
             Rower rower = (Rower) entry;
             if (rower.getEmailAddress().equalsIgnoreCase(email)) {
-                System.out.println("PASSWORD: " + password);
-                System.out.println("ROWER PASSWORD: " + rower.getPassword());
                 if (BCrypt.checkpw(password, rower.getPassword())) {
                     ActiveUsers.addActiveUser(rower.getId());
                     return rower;
