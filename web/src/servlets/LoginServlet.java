@@ -2,6 +2,7 @@ package servlets;
 
 import com.google.gson.Gson;
 import constants.Constants;
+import data.Notifications;
 import entities.Rower;
 import server.Response;
 import utils.EngineUtils;
@@ -25,6 +26,7 @@ public class LoginServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String logout = req.getParameter("logout");
         if (logout != null && logout.equals("true")) {
+            Notifications.clearNotifications(SessionUtils.getUser(req).getId());
             SessionUtils.clearSession(req);
             resp.sendRedirect(Constants.ROOT_PATH);
         }

@@ -42,6 +42,11 @@ public class BCEngine implements Engine {
     private final XMLDatabase xmlDatabase;
 
     /**
+     * Notifications
+     */
+    private final Notifications notifications;
+
+    /**
      * Current logged in user
      */
     private Rower user;
@@ -53,7 +58,7 @@ public class BCEngine implements Engine {
     private BCEngine() {
         this.database = new Database();
         this.xmlDatabase = new XMLDatabase(this.database);
-        new Notifications(database.get("rowers").values().toArray(new Rower[0]));
+        this.notifications = new Notifications(database.get("rowers").values().toArray(new Rower[0]));
 
         // Init controllers
         controllers = new HashMap<>(Database.getEntityTypes().length);

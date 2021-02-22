@@ -9,12 +9,21 @@
 </head>
 <body>
 
-<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+<nav class="navbar navbar-expand-md navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
     <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3 nav-link-dashboard" href="#">BoatsClub</a>
     <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <ul class="navbar-nav px-3">
+        <li class="nav-item notifications-nav text-nowrap">
+            <button id="openNotifications" type="button" class="btn notifications">
+                <span data-feather="bell"></span> <span class="badge badge-light"></span>
+            </button>
+            <div id="notificationsBox" class="bs-popover-bottom popover">
+                <div class="arrow" style="left: 7px;"></div>
+                <div id="notificationList" class="popover-body"></div>
+            </div>
+        </li>
         <li class="nav-item text-nowrap">
             <a class="nav-link" href="login?logout=true">Sign out</a>
         </li>
@@ -90,8 +99,11 @@
 <script type="text/javascript" src="assets/js/popup.js"></script>
 <script type="text/javascript" src="assets/js/forms.js"></script>
 <script type="text/javascript" src="assets/js/common.js"></script>
+<script type="text/javascript" src="assets/js/notifications.js"></script>
+<script type="text/javascript" src="assets/js/notificationsAdmin.js"></script>
 <script type="text/javascript" src="assets/js/importExport.js"></script>
 <script type="text/javascript" src="assets/js/boats.js"></script>
+<script type="text/javascript" src="assets/js/commonOrders.js"></script>
 <script type="text/javascript" src="assets/js/orders.js"></script>
 <script type="text/javascript" src="assets/js/ordersByDate.js"></script>
 <script type="text/javascript" src="assets/js/ordersActions.js"></script>

@@ -8,13 +8,10 @@ import entities.Order;
 import entities.Rower;
 import exceptions.RecordNotFoundException;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static data.Database.database;
 
 public class Notifications {
 
@@ -23,7 +20,6 @@ public class Notifications {
     public Notifications(Rower[] rowers) { //initialize rowers
         for (Rower rower: rowers){
             List<String> messages = new ArrayList<>();
-            messages.add("");
             notifications.put(rower.getId(), messages);
         }
     }
@@ -46,6 +42,11 @@ public class Notifications {
             List<String> rowerNotific = notifications.get(rowerId);
             rowerNotific.add(message);
         }
+
+        notifications.get(order.getRegisterRower()).add(message);
+
+        System.out.println("Adding notification: " + message);
+        System.out.println(notifications.get(1));
     }
 
     public static void addNotificationToAllUsers(String message) {
@@ -56,11 +57,16 @@ public class Notifications {
         notifications.clear();
     }
 
+    public static void clearNotifications(int rowerId) {
+        notifications.remove(rowerId);
+    }
+
     public static Map<Integer, List<String>> getAllNotifications() {
         return notifications;
     }
 
     public static List<String> getUserNotifications(Integer rowerId) {
+        System.out.println(notifications.get(rowerId));
         return notifications.get(rowerId);
     }
 }

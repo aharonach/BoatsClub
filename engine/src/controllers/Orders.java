@@ -1,5 +1,7 @@
 package controllers;
 
+import com.sun.deploy.util.StringUtils;
+import data.Notifications;
 import engine.BCEngine;
 import entities.Boat;
 import entities.Entity;
@@ -16,10 +18,12 @@ import wrappers.OrderWrapper;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class Orders extends Entities implements OrdersController {
 
@@ -120,6 +124,12 @@ public class Orders extends Entities implements OrdersController {
         validateOrder(updatedOrder);
 
         Order orderToUpdate = getRecord(id);
+
+        String notifications = getNotificationMessage(orderToUpdate, updatedOrder);
+
+        if (!notifications.isEmpty()) {
+            Notifications.addNotificationAuto(orderToUpdate.getId(), notifications);
+        }
 
         // get updated fields (fieldName -> value)
         Map<String, Object> updatedFields = order.updatedFields();
@@ -367,8 +377,11 @@ public class Orders extends Entities implements OrdersController {
         checkBoatCapacityForOrder(boat.getType().getMaxCapacity(), order.getRowers());
         checkBoatSameOrder(boatId, orderId);
 
+        Notifications.addNotificationAuto(orderId, "Order ID " + orderId + ": Your order has been appointed");
+
         order.setBoat(boatId);
         order.setApprovedRequest(true);
+
         engine().updateRecord("orders", order);
     }
 
@@ -482,6 +495,48 @@ public class Orders extends Entities implements OrdersController {
             return !endTime.isBefore(startTimeEditedOrder);
         } catch (RecordNotFoundException ignored) {
             return false;
+        }
+    }
+
+    public String getNotificationMessage(Order orderToCheck, OrderWrapper orderUpdate) {
+        List<String> messages = new ArrayList<>();
+
+        if (!orderToCheck.getRowers().equals(orderUpdate.getRowers())) {
+            System.out.println("Rowers has been changed");
+            System.out.println(orderToCheck.getRowers());
+            System.out.println(orderUpdate.getRowers());
+            messages.add("Rowers has been changed");
+        }
+        if (!orderToCheck.getActivityDate().equals(orderUpdate.getActivityDate())) {
+            messages.add("Activity date has been changed");
+        }
+        if (!orderToCheck.getActivityTitle().equals(orderUpdate.getActivityTitle())) {
+            System.out.println("Activity title has been changed");
+            messages.add("Activity title has been changed");
+        }
+        if (!orderToCheck.getActivityStartTime().equals(orderUpdate.getActivityStartTime())) {
+            System.out.println("Activity start time has been changed");
+            messages.add("Activity start time has been changed");
+        }
+        if (!orderToCheck.getActivityEndTime().equals(orderUpdate.getActivityEndTime())) {
+            System.out.println("Activity end time has been changed");
+            messages.add("Activity end time has been changed");
+        }
+        if (!orderToCheck.getBoatTypes().equals(orderUpdate.getBoatTypes())) {
+            messages.add("Boat types has been changed");
+        }
+        if (orderToCheck.isApprovedRequest() != orderUpdate.isApprovedRequest()) {
+            messages.add("Status has been changed");
+        }
+        if (orderToCheck.getBoat() != null && !orderToCheck.getBoat().equals(orderUpdate.getBoat())) {
+            messages.add("The appointed boat has been changed");
+        }
+
+        if (messages.isEmpty()) {
+            return "";
+        } else {
+            messages.add(0, "Order ID " + orderToCheck.getId());
+            return String.join(";", messages);
         }
     }
 }

@@ -135,3 +135,29 @@ body {
 select[multiple] {
     min-height: 180px;
 }
+
+.notifications .feather-bell {
+    color: white;
+}
+
+.notifications-nav {
+    position: relative;
+}
+
+#notificationsBox {
+    min-width: 400px;
+    top: 100%;
+    left: 0;
+    display: none;
+}
+
+#notificationsBox.show {
+    display: block;
+}
+
+@media (max-width: 768px) {
+    #notificationsBox {
+        min-width: 80vw;
+        min-height: 80vh;
+    }
+}
