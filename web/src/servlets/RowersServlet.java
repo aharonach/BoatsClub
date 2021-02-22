@@ -65,7 +65,7 @@ public class RowersServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        SessionUtils.checkAdminPermission(req);
+        SessionUtils.checkPermissions(req);
 
         String servletPath = req.getServletPath();
 
@@ -152,19 +152,22 @@ public class RowersServlet extends HttpServlet {
     }
 
     private RowerWrapper getParams(int id, HttpServletRequest req) {
+        boolean loggedInIsManager = SessionUtils.getUser(req).isManager();
+
         String name = req.getParameter("name");
-        Integer age = Integer.parseInt(req.getParameter("age"));
-        Rower.Level level = Rower.Level.valueOf(req.getParameter("level"));
-        boolean hasPrivateBoat = Boolean.parseBoolean(req.getParameter("hasPrivateBoat"));
+        String emailAddress = req.getParameter("emailAddress");
+        String phoneNumber = req.getParameter("phoneNumber");
+        String password = req.getParameter("password");
+        String notes = req.getParameter("notes");
+
+        Integer age = loggedInIsManager ? Integer.parseInt(req.getParameter("age")) : null;
+        Rower.Level level = loggedInIsManager ? Rower.Level.valueOf(req.getParameter("level")) : null;
+        Boolean hasPrivateBoat = loggedInIsManager ? Boolean.parseBoolean(req.getParameter("hasPrivateBoat")) : null;
         Integer privateBoat = null;
-        if (hasPrivateBoat && req.getParameter("privateBoat") != null) {
+        if (loggedInIsManager && hasPrivateBoat && req.getParameter("privateBoat") != null) {
             privateBoat = Integer.parseInt(req.getParameter("privateBoat"));
         }
-        String phoneNumber = req.getParameter("phoneNumber");
-        String notes = req.getParameter("notes");
-        Boolean isManager = Boolean.parseBoolean(req.getParameter("isManager"));
-        String emailAddress = req.getParameter("emailAddress");
-        String password = req.getParameter("password");
+        Boolean isManager = loggedInIsManager ? Boolean.parseBoolean(req.getParameter("isManager")) : null;
 
         return new RowerWrapper(id, name, age, LocalDateTime.now(), level, hasPrivateBoat, privateBoat, phoneNumber,
                 notes, isManager, emailAddress, BCrypt.hashpw(password, BCrypt.gensalt(12)),

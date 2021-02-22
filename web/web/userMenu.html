@@ -36,8 +36,22 @@
                             <span data-feather="file"> </span> Orders
                         </a>
                         <ul class="nav flex-column subnav">
-                            <li class="nav-item"><a id="orders" class="orders-menu nav-link" data-title="My Orders" href="orders">View My Orders</a></li>
-                            <li class="nav-item"><a id="orders-add" class="nav-link" href="orders/add">Add New Order</a></li>
+                            <li class="nav-item">
+                                <a class="orders-menu nav-link" data-title="My Orders" href="orders">All My Orders</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="orders-menu nav-link" data-title="Open Orders" href="orders?filterBy=non-appointed">View Open Orders</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="orders-menu nav-link" data-title="Appointed Orders" href="orders?filterBy=appointed">View Appointed Orders</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="orders-menu nav-link" data-title="History Orders"
+                                   href="orders?filterBy=history">View History</a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="orders-add" class="nav-link" href="orders/add">Add New Order</a>
+                            </li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -67,6 +81,7 @@
 <script type="text/javascript" src="assets/js/popup.js"></script>
 <script type="text/javascript" src="assets/js/forms.js"></script>
 <script type="text/javascript" src="assets/js/common.js"></script>
+<script type="text/javascript" src="assets/js/commonOrders.js"></script>
 <script type="text/javascript" src="assets/js/ordersForUser.js"></script>
 <script type="text/javascript" src="assets/js/rowersForUser.js"></script>
 </body>

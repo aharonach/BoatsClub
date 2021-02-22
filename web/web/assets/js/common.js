@@ -212,13 +212,13 @@ document.addEventListener('click', event => {
                 if (response) {
                     if (response.status) {
                         showAlert("success", response.value);
-
-                        // update entity list if it's present
-                        if (document.getElementById(entity + "-list")) {
-                            document.getElementById(entity).click();
-                        }
                     } else {
                         showAlert("error", response.error);
+                    }
+
+                    // update entity list if it's present
+                    if (document.getElementById(entity + "-list")) {
+                        document.getElementById(entity).click();
                     }
                 }
             });

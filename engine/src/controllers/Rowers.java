@@ -68,7 +68,7 @@ public class Rowers extends Entities implements RowersController {
 
         checkPrivateBoat(updatedRower);
 
-        if (updatedRower.hasPrivateBoat() && updatedRower.getPrivateBoat() != null) {
+        if (updatedRower.hasPrivateBoat() != null && updatedRower.hasPrivateBoat() && updatedRower.getPrivateBoat() != null) {
             getBoats().getRecord(updatedRower.getPrivateBoat()).setPrivate(true);
         }
 
@@ -123,7 +123,7 @@ public class Rowers extends Entities implements RowersController {
     }
 
     public void checkPrivateBoat(RowerWrapper rower) throws InvalidInputException {
-        if (rower.hasPrivateBoat() && rower.getPrivateBoat() == null) {
+        if (rower.hasPrivateBoat() != null && rower.hasPrivateBoat() && rower.getPrivateBoat() == null) {
             throw new InvalidInputException("Private boat is not set");
         }
     }

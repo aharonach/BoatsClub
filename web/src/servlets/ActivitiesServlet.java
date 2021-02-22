@@ -27,10 +27,6 @@ public class ActivitiesServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         SessionUtils.checkPermissions(req);
 
-        String servletPath = req.getServletPath();
-
-        System.out.println(servletPath + " from get");
-
         Gson gson = new Gson();
         String json = "{}";
 
@@ -59,8 +55,6 @@ public class ActivitiesServlet extends HttpServlet {
         SessionUtils.checkAdminPermission(req);
 
         String servletPath = req.getServletPath();
-
-        System.out.println(servletPath + " from post");
 
         switch (servletPath) {
             case "/activities/add":
@@ -145,14 +139,9 @@ public class ActivitiesServlet extends HttpServlet {
     private ActivityWrapper getParams(int id, HttpServletRequest req) {
         String title = req.getParameter("title");
 
-        System.out.println("START TIME: " + req.getParameter("startTime")); //debugging
-        System.out.println("END TIME: " + req.getParameter("endTime")); //debugging
-
         LocalTime startTime = LocalTime.parse(req.getParameter("startTime"));
         LocalTime endTime = LocalTime.parse(req.getParameter("endTime"));
         Boat.Type type = null;
-//        System.out.println(req.getParameter("type"));
-//        System.out.println(!req.getParameter("type").equalsIgnoreCase("-1"));
         if( req.getParameter("boatType") != null )
             if (!req.getParameter("boatType").equalsIgnoreCase("-1"))
                 type = Boat.Type.valueOf(req.getParameter("boatType"));

@@ -43,7 +43,6 @@ public class NotificationsServlet extends HttpServlet {
 //        SessionUtils.checkPermissions(req);
 //
 //        String servletPath = req.getServletPath();
-//        System.out.println(servletPath);
 //
 //        switch (servletPath) {
 //            case "/notifications/auto":

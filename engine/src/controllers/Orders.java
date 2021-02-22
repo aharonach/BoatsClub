@@ -213,7 +213,7 @@ public class Orders extends Entities implements OrdersController {
     public Order[] findOrdersByRower(int rowerId) {
         return filterList(o -> {
             Order order = (Order) o;
-            return order.getRowers() != null && order.getRowers().contains(rowerId);
+            return order.getRegisterRower() == rowerId || (order.getRowers() != null && order.getRowers().contains(rowerId));
         });
     }
 

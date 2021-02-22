@@ -23,7 +23,7 @@ const appointOrderFields = [
         type: "select",
         label: "Select a boat to appoint",
         options: [
-            {ajax: "boats?non-private-non-disabled", valueField: "id", labelField: "name+typeName"}
+            {ajax: "boats", valueField: "id", labelField: "name+typeName"}
         ],
     },
 ];
@@ -33,9 +33,13 @@ document.addEventListener('click', event => {
     if (el.tagName === 'A' && el.href.includes('/appoint')) {
         event.preventDefault();
         const entity = el.dataset.entity,
-            entityId = el.dataset.id;
+            entityId = el.dataset.id,
+            boatTypes = el.dataset.boatTypes;
 
-        prepareOptions(appointOrderFields).then(fields => {
+        const newFormFields = JSON.parse(JSON.stringify(appointOrderFields));
+        newFormFields[0].options[0].ajax += "?" + boatTypes;
+
+        prepareOptions(newFormFields).then(fields => {
             const form = new Form({
                 id: "appoint-order",
                 method: 'post',

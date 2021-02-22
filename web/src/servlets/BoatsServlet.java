@@ -145,15 +145,12 @@ public class BoatsServlet extends HttpServlet {
         Boolean isCoastal = Boolean.parseBoolean(req.getParameter("isCoastal"));
         Boolean isDisabled = Boolean.parseBoolean(req.getParameter("isDisabled"));
 
-        System.out.println(isDisabled);
-
         return new BoatWrapper(id, name, type, isPrivate, isWide, isCoastal, isDisabled);
     }
 
     protected Boat[] handleFilter(HttpServletRequest req) {
         Boats controller = EngineUtils.getBoats(getServletContext());
         String filter = req.getParameter("filterBy");
-        System.out.println(filter);
         Boat[] boats;
         switch (filter == null ? "" : filter) {
             case "type": // /boats?filterBy=types&types=Single&types=Double
@@ -161,8 +158,9 @@ public class BoatsServlet extends HttpServlet {
                 boats = controller.findBoatsByType(Boat.Type.valueOf(type));
                 break;
             case "types":
-                String[] types = req.getParameterValues("types");
-                List<Boat.Type> boatTypes = convertToBoatTypeList(types);
+                String types = req.getParameter("types");
+                String[] typesArray = types.split(",");
+                List<Boat.Type> boatTypes = convertToBoatTypeList(typesArray);
                 boats = controller.findBoatsByTypes(boatTypes);
                 break;
             case "non-private-non-disabled":

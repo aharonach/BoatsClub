@@ -85,20 +85,19 @@ function duplicateLink(orderId, label= "Duplicate") {
     return `<a class="duplicate-link" href="orders/duplicate" data-entity="orders" data-id="${orderId}">${label}</a>`;
 }
 
-function appointLink(orderId, label= "Appoint") {
-    return `<a class="appoint-link" href="orders/appoint" data-entity="orders" data-id="${orderId}">${label}</a>`;
+function appointLink(orderId, boatTypes, label= "Appoint") {
+    return `<a class="appoint-link" href="orders/appoint" data-entity="orders" data-boat-types="${boatTypes}" data-id="${orderId}">${label}</a>`;
 }
 
-function getOrderActions(orderId, approved) {
-    return `<span class="actions d-block">${editLink("orders", orderId)} | ${duplicateLink(orderId)}${approved ? "" : " | "+appointLink(orderId)} | ${deleteLink("orders", orderId)}</span>`;
+function getOrderActions(order, approved) {
+    return `<span class="actions d-block">${editLink("orders", order.id)} | ${duplicateLink(order.id)}${approved ? "" : " | " + appointLink(order.id, order.boatTypes)} | ${deleteLink("orders", order.id)}</span>`;
 }
 
 function orderRow(order, showActions = false) {
-    console.log(order);
     let row = `<tr>`;
 
     if (showActions) {
-        row += `<td>${order.id} ${getOrderActions(order.id, order.approvedRequest)}</span></td>`;
+        row += `<td>${order.id} ${getOrderActions(order, order.approvedRequest)}</span></td>`;
     } else {
         row += `<td>${order.id}</td>`;
     }

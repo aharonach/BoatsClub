@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import controllers.Orders;
 import entities.Boat;
 import entities.Order;
+import entities.Rower;
 import exceptions.InvalidInputException;
 import exceptions.RecordAlreadyExistsException;
 import exceptions.RecordNotFoundException;
@@ -55,7 +56,6 @@ public class OrdersServlet extends HttpServlet {
         SessionUtils.checkPermissions(req);
 
         String servletPath = req.getServletPath();
-        System.out.println(servletPath);
 
         switch (servletPath) {
             case "/orders/add":
@@ -226,9 +226,6 @@ public class OrdersServlet extends HttpServlet {
         Response response;
         Orders controller = EngineUtils.getOrders(getServletContext());
 
-        System.out.println("order 1: " +Integer.parseInt(req.getParameter("order1")));
-        System.out.println("order 2: " +Integer.parseInt(req.getParameter("order2")));
-
         OrderWrapper orderToKeep = controller.get(Integer.parseInt(req.getParameter("order1")));
         OrderWrapper orderToMerge = controller.get(Integer.parseInt(req.getParameter("order2")));
 
@@ -274,18 +271,29 @@ public class OrdersServlet extends HttpServlet {
     protected Order[] handleFilter(HttpServletRequest req) {
         Orders controller = EngineUtils.getOrders(getServletContext());
         String filter = req.getParameter("filterBy");
-        System.out.println(filter);
-        controller.engine().setUser(SessionUtils.getUser(req).getId());
+        Rower loggedIn = SessionUtils.getUser(req);
+        controller.engine().setUser(loggedIn.getId());
         Order[] orders;
         switch (filter == null ? "" : filter) {
             case "user":
-                orders = controller.findOrdersCreatedByRower(SessionUtils.getUser(req).getId());
+                orders = controller.findOrdersByRower(loggedIn.getId());
                 break;
             case "appointed":
-                orders = controller.filterList(o -> ((Order) o).isApprovedRequest());
+                if (loggedIn.isManager()) {
+                    orders = controller.filterList(o -> ((Order) o).isApprovedRequest());
+                } else {
+                    orders = controller.findOrdersByRower(loggedIn.getId(), true);
+                }
+                break;
+            case "history":
+                orders = controller.findOrdersFromDateToDateOfRower(loggedIn.getId(), LocalDate.MIN, LocalDate.now());
                 break;
             case "non-appointed":
-                orders = controller.filterList(o -> !((Order) o).isApprovedRequest());
+                if (loggedIn.isManager()) {
+                    orders = controller.filterList(o -> !((Order) o).isApprovedRequest());
+                } else {
+                    orders = controller.findOrdersByRower(loggedIn.getId(), false);
+                }
                 break;
             case "today":
                 orders = controller.findOrdersByDate(LocalDate.now());
