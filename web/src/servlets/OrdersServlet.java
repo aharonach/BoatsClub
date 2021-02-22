@@ -194,8 +194,6 @@ public class OrdersServlet extends HttpServlet {
     protected void duplicateOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, RecordNotFoundException {
         SessionUtils.checkAdminPermission(req);
 
-        System.out.println("here");
-
         Response response;
         Orders controller = EngineUtils.getOrders(getServletContext());
 
@@ -250,7 +248,6 @@ public class OrdersServlet extends HttpServlet {
     private OrderWrapper getParams(int id, HttpServletRequest req) throws RecordNotFoundException {
         List<Boat.Type> boatTypes = new ArrayList<>();
         for(String boatTypeString: req.getParameterValues("boatTypes")) {
-            System.out.println(Boat.Type.valueOf(boatTypeString).getMaxCapacity());
             boatTypes.add((Boat.Type.valueOf(boatTypeString)));
         }
 
