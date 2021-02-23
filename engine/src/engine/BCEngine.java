@@ -246,4 +246,8 @@ public class BCEngine implements Engine {
         );
         addRecord("rowers", rower);
     }
+
+    public Notifications getNoticiations() {
+        return this.notifications;
+    }
 }

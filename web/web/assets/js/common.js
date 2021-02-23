@@ -1,5 +1,11 @@
 const ROOT_PATH = '/boatsclub';
 
+const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
 async function ajaxRequest(url, method = 'get', data = false, multipart = false) {
     try {
         let params = {
@@ -165,7 +171,7 @@ const editLink = (entity, id, label = "Edit") => {
 const editLinks = (entity, ids) => {
     let output = [];
     for (const id of ids) {
-        output.push(`<a class="edit-link" href="${entity}/edit" data-entity="${entity}" data-id="${id}">${id}</a>`);
+        output.push(editLink(entity, id, id));
     }
     return output.join(", ");
 }
@@ -177,7 +183,7 @@ const deleteLink = (entity, id, label = "Delete") => {
 /**
  * Dropdown menu - open sub menu on click
  */
-document.querySelectorAll('.main-nav-link').forEach(navLink => {
+document.querySelectorAll(".main-nav-link").forEach(navLink => {
    navLink.addEventListener("click", e => {
        e.preventDefault();
        if (navLink.classList.contains('active')) {
@@ -188,19 +194,12 @@ document.querySelectorAll('.main-nav-link').forEach(navLink => {
    });
 });
 
-document.querySelectorAll('.nav-link-dashboard').forEach(navLink => {
-    navLink.addEventListener("click", e => {
-        e.preventDefault();
-        putContent("Dashboard", "");
-    });
-});
-
 /**
  * Delete Record
  */
-document.addEventListener('click', event => {
+document.addEventListener("click", event => {
     const el = event.target;
-    if (el.tagName === 'A' && el.href.includes('/delete')) {
+    if (el.tagName === "A" && el.href.includes("/delete")) {
         event.preventDefault();
         const answer = confirm("Are you sure?");
 
@@ -229,21 +228,21 @@ document.addEventListener('click', event => {
 /**
  * Edit/duplicate record with popup
  */
-document.addEventListener('click', event => {
+document.addEventListener("click", event => {
     const el = event.target;
-    if (el.tagName === 'A' && (el.href.includes('/edit') || el.href.includes('/duplicate'))) {
+    if (el.tagName === "A" && (el.href.includes("/edit") || el.href.includes("/duplicate"))) {
         event.preventDefault();
         const action = el.href.includes('/duplicate') ? "duplicate" : "edit";
         const entity = el.dataset.entity,
             formFields = getFormFields(entity),
             entityId = el.dataset.id;
 
-        ajaxRequest(entity, 'get', { id: entityId }).then(record => {
+        ajaxRequest(entity, "get", { id: entityId }).then(record => {
             prepareOptions(formFields).then(fields => {
-                const formName = action + "-" + entity + '-' + entityId;
+                const formName = action + "-" + entity + "-" + entityId;
                 const form = new Form({
                     id: formName,
-                    method: 'post',
+                    method: "post",
                     fields: prepareFormFields(record, fields),
                     action: el.href,
                 });
@@ -270,14 +269,14 @@ const submitForm = (formId, entity, multipart = false) => {
         event.preventDefault();
         ajaxRequest(form.action, form.method, new FormData(form), multipart).then(response => {
             // Close opened popups
-            const popups = document.getElementsByClassName('modal');
+            const popups = document.getElementsByClassName("modal");
             Array.prototype.forEach.call(popups, function(el) {
                 hidePopup(el);
             });
 
             if (response) {
                 let updateList = false;
-                if (typeof(response.status) === 'undefined') {
+                if (typeof(response.status) === "undefined") {
                     if (response.value instanceof Array) {
                         response.value = response.value.join("<br>");
                     }
@@ -298,3 +297,22 @@ const submitForm = (formId, entity, multipart = false) => {
         });
     })
 };
+
+document.querySelector(".navbar-toggler").addEventListener("click", e=> {
+    e.preventDefault();
+    const menu = document.getElementById("sidebarMenu");
+    if (menu.classList.contains("show")) {
+        menu.classList.remove("show");
+    } else {
+        menu.classList.add("show");
+    }
+});
+
+document.querySelectorAll("ul.subnav .nav-link, .nav-link-dashboard, .nav-link-add-message").forEach(el => {
+    el.addEventListener("click", e => {
+        if (window.innerWidth <= 768) {
+            const menu = document.getElementById("sidebarMenu");
+            menu.classList.remove("show");
+        }
+    });
+});

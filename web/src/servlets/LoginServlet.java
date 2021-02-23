@@ -12,6 +12,7 @@ import utils.TemplateUtils;
 import javax.security.auth.login.CredentialNotFoundException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,8 +27,9 @@ public class LoginServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String logout = req.getParameter("logout");
         if (logout != null && logout.equals("true")) {
-            Notifications.clearNotifications(SessionUtils.getUser(req).getId());
+            EngineUtils.getNotifications(getServletContext()).clearNotifications(SessionUtils.getUser(req).getId());
             SessionUtils.clearSession(req);
+            SessionUtils.deleteCookies(req, resp);
             resp.sendRedirect(Constants.ROOT_PATH);
         }
         TemplateUtils.include("login.html", req, resp);
@@ -49,6 +51,7 @@ public class LoginServlet extends HttpServlet {
                     Rower rower = EngineUtils.getEngine(getServletContext()).authenticate(email, password);
                     SessionUtils.setUser(req, rower);
                     json = gson.toJson(new Response(true, "Successfully logged in"));
+                    SessionUtils.addCookies(rower, resp);
                 } catch (CredentialNotFoundException e) {
                     json = gson.toJson(new Response(false, "Credential not found"));
                 }

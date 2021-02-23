@@ -105,19 +105,24 @@ public class RowersServlet extends HttpServlet {
     protected void editRower(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Response response;
         Rowers controller = EngineUtils.getRowers(getServletContext());
+        Rower loggedIn = SessionUtils.getUser(req);
 
         int id = Integer.parseInt(req.getParameter("id"));
 
-        try {
-            controller.update(id, getParams(id, req));
-            response = new Response(true, "Rower updated successfully");
-        } catch (InvalidInputException | RecordNotFoundException | RecordAlreadyExistsException e) {
-            response = new Response(false, e.getMessage());
+        Gson gson = new Gson();
+
+        if (!loggedIn.isManager() && id != loggedIn.getId()) {
+            response = new Response(false, "You don't have permissions to edit another rower");
+        } else {
+            try {
+                controller.update(id, getParams(id, req));
+                response = new Response(true, "Rower updated successfully");
+            } catch (InvalidInputException | RecordNotFoundException | RecordAlreadyExistsException e) {
+                response = new Response(false, e.getMessage());
+            }
         }
 
-        Gson gson = new Gson();
         String json = gson.toJson(response);
-
         try(PrintWriter out = resp.getWriter()) {
             out.println(json);
             out.flush();

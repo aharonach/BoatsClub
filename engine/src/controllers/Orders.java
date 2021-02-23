@@ -1,6 +1,5 @@
 package controllers;
 
-import com.sun.deploy.util.StringUtils;
 import data.Notifications;
 import engine.BCEngine;
 import entities.Boat;
@@ -18,12 +17,8 @@ import wrappers.OrderWrapper;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class Orders extends Entities implements OrdersController {
 
@@ -128,7 +123,7 @@ public class Orders extends Entities implements OrdersController {
         String notifications = getNotificationMessage(orderToUpdate, updatedOrder);
 
         if (!notifications.isEmpty()) {
-            Notifications.addNotificationAuto(orderToUpdate.getId(), notifications);
+            engine().getNoticiations().addAutoMessage(orderToUpdate.getId(), notifications, collectRowerIds(updatedOrder, orderToUpdate));
         }
 
         // get updated fields (fieldName -> value)
@@ -377,7 +372,7 @@ public class Orders extends Entities implements OrdersController {
         checkBoatCapacityForOrder(boat.getType().getMaxCapacity(), order.getRowers());
         checkBoatSameOrder(boatId, orderId);
 
-        Notifications.addNotificationAuto(orderId, "Order ID " + orderId + ": Your order has been appointed");
+        engine().getNoticiations().addAutoMessage(orderId, "Your order has been appointed", collectRowerIds(null, order));
 
         order.setBoat(boatId);
         order.setApprovedRequest(true);
@@ -535,8 +530,16 @@ public class Orders extends Entities implements OrdersController {
         if (messages.isEmpty()) {
             return "";
         } else {
-            messages.add(0, "Order ID " + orderToCheck.getId());
             return String.join(";", messages);
         }
+    }
+
+    private Set<Integer> collectRowerIds(OrderWrapper orderWrapper, Order order) {
+        Set<Integer> rowerIds = new HashSet<>();
+        if (orderWrapper.getRowers() != null)
+            rowerIds.addAll(orderWrapper.getRowers());
+        rowerIds.addAll(order.getRowers());
+        rowerIds.add(order.getRegisterRower());
+        return rowerIds;
     }
 }

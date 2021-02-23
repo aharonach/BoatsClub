@@ -36,21 +36,38 @@
             <div class="sidebar-sticky pt-3">
                 <ul class="main-nav nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link nav-link-dashboard" href="#">
+                        <a id="dashboard" class="nav-link nav-link-dashboard" href="#">
                             <span data-feather="home"></span> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-add-message" href="notifications">
+                            <span data-feather="message-square"></span> Add Message
                         </a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link main-nav-link dropdown-toggle" href="#">
-                            <span data-feather="file"> </span> Orders
+                            <span data-feather="file"></span> Orders
                         </a>
                         <ul class="nav flex-column subnav">
-                            <li class="nav-item"><a id="orders" class="orders-menu nav-link" data-title="Orders" href="orders">View All Orders</a></li>
-                            <li class="nav-item"><a id="ordersByDate" class="nav-link" data-title="Orders By Date" href="#">View Orders By Date</a></li>
-                            <li class="nav-item"><a id="ordersByUser" class="orders-menu nav-link" data-title="Orders By User" href="orders?filterBy=user">View Orders By User</a></li>
-                            <li class="nav-item"><a id="ordersAppointed" class="orders-menu nav-link" data-title="Appointed Orders" href="orders?filterBy=appointed">View Appointed Orders</a></li>
-                            <li class="nav-item"><a id="orders-appoint" class="orders-menu nav-link" data-title="Non-Appointed Orders" href="orders?filterBy=non-appointed">View Non-Appointed Orders</a></li>
-                            <li class="nav-item"><a id="orders-add" class="nav-link" href="orders/add">Add New Order</a></li>
+                            <li class="nav-item">
+                                <a id="orders" class="orders-menu nav-link" data-title="Orders" href="orders">View All Orders</a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="ordersByDate" class="nav-link" data-title="Orders By Date" href="#">View Orders By Date</a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="ordersByUser" class="orders-menu nav-link" data-title="Orders By User" href="orders?filterBy=user">View Orders By User</a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="ordersAppointed" class="orders-menu nav-link" data-title="Appointed Orders" href="orders?filterBy=appointed">View Appointed Orders</a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="orders-appoint" class="orders-menu nav-link" data-title="Non-Appointed Orders" href="orders?filterBy=non-appointed">View Non-Appointed Orders</a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="orders-add" class="nav-link" href="orders/add">Add New Order</a>
+                            </li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -90,7 +107,7 @@
                 <div id="toolbar" class="btn-toolbar mb-2 mb-md-0"></div>
             </div>
             <div id="feedback" class="d-none alert"></div>
-            <div id="main-content" class="main-content"></div>
+            <div id="main-content" class="main-content"><div id="dashboard-list"></div></div>
         </main>
     </div>
 </div>

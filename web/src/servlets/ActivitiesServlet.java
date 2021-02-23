@@ -34,13 +34,13 @@ public class ActivitiesServlet extends HttpServlet {
 
         if (id != null) {
             try {
-                Activity activity = EngineUtils.getActivites(getServletContext()).getRecord(Integer.parseInt(id));
+                Activity activity = EngineUtils.getActivities(getServletContext()).getRecord(Integer.parseInt(id));
                 json = gson.toJson(activity);
             } catch (RecordNotFoundException e) {
                 e.printStackTrace();
             }
         } else {
-            Activity[] activities = EngineUtils.getActivites(getServletContext()).getList();
+            Activity[] activities = EngineUtils.getActivities(getServletContext()).getList();
             json = gson.toJson(activities);
         }
 
@@ -71,7 +71,7 @@ public class ActivitiesServlet extends HttpServlet {
 
     protected void addActivity(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Response response;
-        Activities controller = EngineUtils.getActivites(getServletContext());
+        Activities controller = EngineUtils.getActivities(getServletContext());
 
         try {
             Integer id = controller.add(getParams(0, req));
@@ -91,7 +91,7 @@ public class ActivitiesServlet extends HttpServlet {
 
     protected void editActivity(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Response response;
-        Activities controller = EngineUtils.getActivites(getServletContext());
+        Activities controller = EngineUtils.getActivities(getServletContext());
 
         int id = Integer.parseInt(req.getParameter("id"));
 
@@ -121,7 +121,7 @@ public class ActivitiesServlet extends HttpServlet {
             Response response;
             String id = req.getParameter("id");
             try {
-                EngineUtils.getActivites(getServletContext()).delete(Integer.parseInt(id));
+                EngineUtils.getActivities(getServletContext()).delete(Integer.parseInt(id));
                 response = new Response(true, "Activity with ID " + id + " deleted successfully.");
             } catch (RecordNotFoundException e) {
                 response = new Response(false, e.getMessage());

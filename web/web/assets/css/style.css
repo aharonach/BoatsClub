@@ -99,6 +99,12 @@ body {
     border-radius: 0;
 }
 
+.navbar .navbar-nav {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
 .form-control-dark {
     color: #fff;
     background-color: rgba(255, 255, 255, .1);

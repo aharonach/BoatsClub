@@ -57,7 +57,7 @@ public class Rowers extends Entities implements RowersController {
 
         // add to database
         engine().addRecord("rowers", rowerToAdd);
-        Notifications.addUser(rowerToAdd.getId());
+        engine().getNoticiations().addUser(rowerToAdd.getId());
         return rowerToAdd.getId();
     }
 
@@ -107,7 +107,7 @@ public class Rowers extends Entities implements RowersController {
         }
 
         engine().deleteRecord("rowers", rower);
-        Notifications.removeUser(rower.getId());
+        engine().getNoticiations().removeUser(rower.getId());
     }
 
     @Override

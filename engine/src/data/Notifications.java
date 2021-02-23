@@ -1,72 +1,67 @@
 package data;
 
-import controllers.Entities;
-import controllers.Orders;
-import controllers.Rowers;
 import engine.BCEngine;
 import entities.Order;
 import entities.Rower;
 import exceptions.RecordNotFoundException;
+import server.Message;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Notifications {
 
-    private static final Map<Integer, List<String>> notifications = new HashMap<>();
+    private final Map<Integer, List<Message>> notifications;
+    private final List<Message> adminNotifications;
 
     public Notifications(Rower[] rowers) { //initialize rowers
-        for (Rower rower: rowers){
-            List<String> messages = new ArrayList<>();
-            notifications.put(rower.getId(), messages);
+        notifications = new HashMap<>();
+        adminNotifications = new ArrayList<>();
+        for (Rower rower: rowers) {
+            notifications.put(rower.getId(), new ArrayList<>());
         }
     }
 
-    public static void addUser(Integer rowerId) {
-        List<String> messages = new ArrayList<>();
-        messages.add("");
-        notifications.put(rowerId, messages);
+    public void addUser(Integer rowerId) {
+        notifications.put(rowerId, new ArrayList<>());
     }
 
-    public static void removeUser(Integer rowerId){
+    public void removeUser(Integer rowerId){
         notifications.remove(rowerId);
     }
 
-    public static void addNotificationAuto(Integer orderId, String message) throws RecordNotFoundException {
-        Order order = (Order) BCEngine.instance().getRecord("orders", orderId);
-        List<Integer> orderRowers = order.getRowers();
+    public void addAutoMessage(Integer orderId, String content, Set<Integer> rowerIds) {
+        Message message = new Message(false, content, orderId);
 
-        for(Integer rowerId: orderRowers){
-            List<String> rowerNotific = notifications.get(rowerId);
+        for(Integer rowerId : rowerIds){
+            List<Message> rowerNotific = notifications.get(rowerId);
+            if (rowerNotific == null)
+                rowerNotific = new ArrayList<>();
             rowerNotific.add(message);
+            notifications.put(rowerId, rowerNotific);
         }
-
-        notifications.get(order.getRegisterRower()).add(message);
-
-        System.out.println("Adding notification: " + message);
-        System.out.println(notifications.get(1));
     }
 
-    public static void addNotificationToAllUsers(String message) {
-        notifications.forEach((k, v) -> v.add(message));
+    public void addAdminNotification(String message) {
+        adminNotifications.add(new Message(true, message, null));
     }
 
-    public static void clearNotifications() {
-        notifications.clear();
+    public void deleteAdminNotification(int messageIndex) {
+        adminNotifications.remove(messageIndex);
     }
 
-    public static void clearNotifications(int rowerId) {
+    public void clearAdminNotifications() {
+        adminNotifications.clear();
+    }
+
+    public void clearNotifications(int rowerId) {
         notifications.remove(rowerId);
     }
 
-    public static Map<Integer, List<String>> getAllNotifications() {
-        return notifications;
+    public List<Message> getAdminNotifications() {
+        return adminNotifications;
     }
 
-    public static List<String> getUserNotifications(Integer rowerId) {
-        System.out.println(notifications.get(rowerId));
+    public List<Message> getUserNotifications(Integer rowerId) {
         return notifications.get(rowerId);
     }
 }
