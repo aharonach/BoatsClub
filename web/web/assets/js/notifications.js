@@ -1,8 +1,7 @@
 const notification = (message, title= "", type = "primary", showDelete = false, index = 0) => {
     const deleteButton = showDelete ? `<button type="button" class="delete-message close" data-index="${index}" data-dismiss="alert" aria-label="Close">×</button>` : "";
     const h6 = title ? `<h6 class="alert-heading">${title}</h6>` : "";
-    const notification = `<div class="admin-message alert-dismissible alert alert-${type}">${h6} ${message} ${deleteButton}</div>`;
-    return notification;
+    return `<div class="admin-message alert-dismissible alert alert-${type}">${h6} ${message} ${deleteButton}</div>`;
 }
 
 const refreshAdminNotifications = notifications => {
@@ -66,7 +65,7 @@ const automaticNotifications = e => {
 
             for (let message of response) {
                 let text = message.message.split(";").join("<br />");
-                html += notification(text, editLink("order", message.orderId, "Order #" + message.orderId), "secondary");
+                html += notification(text, editLink("orders", message.orderId, "Order #" + message.orderId), "secondary");
             }
 
             if (html) {

@@ -245,6 +245,7 @@ document.addEventListener("click", event => {
                     method: "post",
                     fields: prepareFormFields(record, fields),
                     action: el.href,
+                    noSubmit: getCookie("isAdmin") === "false" && entity !== "orders",
                 });
                 const title = action.charAt(0).toUpperCase() + action.slice(1);
 
