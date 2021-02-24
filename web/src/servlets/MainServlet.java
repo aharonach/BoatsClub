@@ -2,9 +2,8 @@ package servlets;
 
 import entities.Rower;
 import utils.SessionUtils;
-import utils.TemplateUtils;
+import utils.ServletUtils;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -21,9 +20,9 @@ public class MainServlet extends HttpServlet {
         if (rower == null) {
             resp.sendRedirect("login");
         } else if (rower.isManager()) {
-            TemplateUtils.include("adminMenu.html", req, resp);
+            ServletUtils.include("adminMenu.html", req, resp);
         } else {
-            TemplateUtils.include("userMenu.html", req, resp);
+            ServletUtils.include("userMenu.html", req, resp);
         }
     }
 }

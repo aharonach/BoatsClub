@@ -2,12 +2,14 @@ package utils;
 
 import constants.Constants;
 import entities.Rower;
+import server.Response;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
 public class SessionUtils {
 
@@ -25,18 +27,22 @@ public class SessionUtils {
         request.getSession().invalidate();
     }
 
-    public static void checkPermissions(HttpServletRequest request) throws ServletException {
+    public static boolean checkPermissions(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Rower user = getUser(request);
         if (user == null) {
-            throw new ServletException("You don't have permissions");
+            ServletUtils.sendResponse(response, new Response(false, "You don't have permissions"));
+            return false;
         }
+        return true;
     }
 
-    public static void checkAdminPermission(HttpServletRequest request) throws ServletException {
+    public static boolean checkAdminPermission(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Rower user = getUser(request);
         if (user == null || !user.isManager()) {
-            throw new ServletException("You don't have permissions");
+            ServletUtils.sendResponse(response, new Response(false, "You don't have permissions"));
+            return false;
         }
+        return true;
     }
 
     public static void addCookies(Rower rower, HttpServletResponse resp) {

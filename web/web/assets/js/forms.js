@@ -176,17 +176,16 @@ class Form {
                     break;
             }
         }
-        form += this.submit(submitLabel);
+        if (!args.noSubmit) {
+            form += this.submit(submitLabel);
+        }
         form += `</form>`;
         this.form = form;
     }
 
     selectField(args) {
         let field = this.label(args.id, args.label);
-        field += `<select class="form-control" id="${args.id}" name="${args.id}" ${args.multiple ? "multiple" : ""}>`;
-        // if (args.includeEmpty) {
-        //     field += `<option value="" selected>Select...</option>`;
-        // }
+        field += `<select class="form-control" id="${args.id}" name="${args.id}" ${args.multiple ? "multiple" : ""} ${this.disabled(args)} ${this.required(args)}>`;
         for (let option of args.options) {
             field += `<option value="${option.value}" ${option.selected ? "selected" : ""}>${option.label}</option>`;
         }
@@ -195,7 +194,7 @@ class Form {
     }
 
     checkboxField(args) {
-        let field = `<input type="checkbox" class="form-check-input" id="${args.id}" value="true" name="${args.id}" ${args.selected ? "checked" : ""}> <label class="form-check-label" for="${args.id}">${args.label}</label>`;
+        let field = `<input type="checkbox" class="form-check-input" id="${args.id}" value="true" name="${args.id}" ${args.selected ? "checked" : ""} ${this.disabled(args)}> <label class="form-check-label" for="${args.id}">${args.label}</label>`;
         return this.formGroupWrap(this.formCheckWrap(field));
     }
 
@@ -204,7 +203,7 @@ class Form {
             i = 1;
 
         for (let option of args.options) {
-            let radio = `<input type="radio" class="form-check-input" id="${args.id + "-" + option.value}" name="${args.id}" value="${option.value}" ${option.selected ? "checked" : ""} ${this.required(args)}> <label class="form-check-label" for="${args.id + "-" + option.value}">${option.label}</label>`;
+            let radio = `<input type="radio" class="form-check-input" id="${args.id + "-" + option.value}" name="${args.id}" value="${option.value}" ${option.selected ? "checked" : ""} ${this.required(args)} ${this.disabled(args)}> <label class="form-check-label" for="${args.id + "-" + option.value}">${option.label}</label>`;
             field += this.formCheckWrap(radio);
             i++;
         }
@@ -216,7 +215,7 @@ class Form {
             i = 1;
 
         for (let option of args.options) {
-            let radio = `<input type="radio" class="form-check-input" id="${args.id + "-" + option.value}" name="action" value="${option.value}" ${option.selected ? "checked" : ""} ${this.required(args)}> <label class="form-check-label" for="${args.id + "-" + option.value}">${option.label}</label>`;
+            let radio = `<input type="radio" class="form-check-input" id="${args.id + "-" + option.value}" name="action" value="${option.value}" ${option.selected ? "checked" : ""} ${this.required(args)} ${this.disabled(args)}> <label class="form-check-label" for="${args.id + "-" + option.value}">${option.label}</label>`;
             field += this.formCheckWrap(radio);
             i++;
         }
@@ -239,7 +238,7 @@ class Form {
     defaultField(args) {
         let field = args.label ? this.label(args.id, args.label) : '';
         const value = args.value ? args.value : '';
-        field += `<input ${args.readonly ? "readonly" : ""} class="form-control" type="${args.type}" ${args.pattern ? "pattern=\"" + args.pattern + "\"" : ""} value="${value}" id="${args.id}" name="${args.id}" placeholder="${args.placeholder ? args.placeholder : ""}" ${this.required(args)}>`;
+        field += `<input ${args.readonly ? "readonly" : ""} class="form-control" type="${args.type}" ${args.pattern ? "pattern=\"" + args.pattern + "\"" : ""} value="${value}" id="${args.id}" name="${args.id}" placeholder="${args.placeholder ? args.placeholder : ""}" ${this.required(args)} ${this.disabled(args)}>`;
         return this.formGroupWrap(field);
     }
 
@@ -257,6 +256,10 @@ class Form {
 
     required(args) {
         return typeof(args.required) !== 'undefined' && args.required ? "required" : "";
+    }
+
+    disabled(args) {
+        return typeof(args.disabled) !== 'undefined' && args.disabled ? "disabled" : "";
     }
 
     getHtml() {

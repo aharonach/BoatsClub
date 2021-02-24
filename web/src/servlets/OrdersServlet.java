@@ -10,6 +10,7 @@ import exceptions.RecordAlreadyExistsException;
 import exceptions.RecordNotFoundException;
 import server.Response;
 import utils.EngineUtils;
+import utils.ServletUtils;
 import utils.SessionUtils;
 import wrappers.OrderWrapper;
 import javax.servlet.ServletException;
@@ -27,8 +28,11 @@ import java.util.List;
 @WebServlet(name = "OrdersServlet", urlPatterns = {"/orders", "/orders/edit", "/orders/add", "/orders/delete", "/orders/appoint", "/orders/duplicate", "/orders/merge"})
 public class OrdersServlet extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        SessionUtils.checkPermissions(req);
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        if (!SessionUtils.checkPermissions(req, resp)) {
+            return;
+        }
+
         Gson gson = new Gson();
         String json = "{}";
         String id = req.getParameter("id");
@@ -45,15 +49,14 @@ public class OrdersServlet extends HttpServlet {
             }
         }
 
-        try(PrintWriter out = resp.getWriter()) {
-            out.println(json);
-            out.flush();
-        }
+        ServletUtils.sendResponse(resp, json);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        SessionUtils.checkPermissions(req);
+        if (!SessionUtils.checkPermissions(req, resp)) {
+            return;
+        }
 
         String servletPath = req.getServletPath();
 
@@ -88,7 +91,9 @@ public class OrdersServlet extends HttpServlet {
     }
 
     protected void addOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        SessionUtils.checkPermissions(req);
+        if (!SessionUtils.checkPermissions(req, resp)) {
+            return;
+        }
 
         Response response;
         Orders controller = EngineUtils.getOrders(getServletContext());
@@ -112,7 +117,9 @@ public class OrdersServlet extends HttpServlet {
     }
 
     protected void editOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        SessionUtils.checkPermissions(req);
+        if (!SessionUtils.checkPermissions(req, resp)) {
+            return;
+        }
         Response response;
         Orders controller = EngineUtils.getOrders(getServletContext());
 
@@ -138,7 +145,9 @@ public class OrdersServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        SessionUtils.checkAdminPermission(req);
+        if (!SessionUtils.checkAdminPermission(req, resp)) {
+            return;
+        }
 
         String servletPath = req.getServletPath();
 
@@ -165,7 +174,9 @@ public class OrdersServlet extends HttpServlet {
 
 
     protected void appointOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        SessionUtils.checkAdminPermission(req);
+        if(!SessionUtils.checkAdminPermission(req, resp)){
+            return;
+        }
 
         Response response;
         Orders controller = EngineUtils.getOrders(getServletContext());
@@ -192,7 +203,9 @@ public class OrdersServlet extends HttpServlet {
     }
 
     protected void duplicateOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, RecordNotFoundException {
-        SessionUtils.checkAdminPermission(req);
+        if(!SessionUtils.checkAdminPermission(req, resp)){
+            return;
+        }
 
         Response response;
         Orders controller = EngineUtils.getOrders(getServletContext());
@@ -219,7 +232,9 @@ public class OrdersServlet extends HttpServlet {
     }
 
     protected void mergeOrders(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, RecordNotFoundException {
-        SessionUtils.checkPermissions(req);
+        if(!SessionUtils.checkPermissions(req, resp)){
+            return;
+        }
 
         Response response;
         Orders controller = EngineUtils.getOrders(getServletContext());

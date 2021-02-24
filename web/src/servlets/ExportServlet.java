@@ -3,7 +3,7 @@ package servlets;
 import engine.BCEngine;
 import utils.EngineUtils;
 import utils.SessionUtils;
-import utils.TemplateUtils;
+import utils.ServletUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,7 +17,9 @@ import java.io.IOException;
 public class ExportServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        SessionUtils.checkAdminPermission(req);
+        if(!SessionUtils.checkAdminPermission(req, resp)){
+            return;
+        }
 
         BCEngine engine = EngineUtils.getEngine(getServletContext());
 
@@ -25,6 +27,6 @@ public class ExportServlet extends HttpServlet {
 
         File file = engine.exportRecordsToFile(entity, getServletContext().getRealPath("/"));
 
-        resp.sendRedirect(TemplateUtils.getBaseUrl(req).concat("/" + file.getName()));
+        resp.sendRedirect(ServletUtils.getBaseUrl(req).concat("/" + file.getName()));
     }
 }

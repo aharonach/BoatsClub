@@ -18,7 +18,9 @@ import java.io.PrintWriter;
 public class NotificationsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        SessionUtils.checkPermissions(req);
+        if(!SessionUtils.checkPermissions(req, resp)){
+            return;
+        }
 
         boolean fetchAdminNotification = req.getParameter("admin") != null;
         int userId = SessionUtils.getUser(req).getId();
@@ -46,33 +48,15 @@ public class NotificationsServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        SessionUtils.checkAdminPermission(req);
+        if(!SessionUtils.checkAdminPermission(req, resp)){
+            return;
+        }
         if (req.getParameter("delete") != null) {
             this.deleteNotification(req, resp);
         } else {
             this.addNotificationToAllUsers(req, resp);
         }
     }
-
-//    protected void addNotification(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, RecordNotFoundException {
-//        SessionUtils.checkAdminPermission(req);
-//
-//        Response response;
-//
-//        Integer orderId = Integer.parseInt(req.getParameter("orderId"));
-//        String message = req.getParameter("message");
-//
-//        Notifications.addNotificationAuto(orderId, message);
-//        response = new Response(true, "Notification to rowers with order ID " + orderId + " sent successfully");
-//
-//        Gson gson = new Gson();
-//        String json = gson.toJson(response);
-//
-//        try(PrintWriter out = resp.getWriter()) {
-//            out.println(json);
-//            out.flush();
-//        }
-//    }
 
     private void deleteNotification(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Response response;

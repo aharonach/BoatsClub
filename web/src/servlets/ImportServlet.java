@@ -26,7 +26,9 @@ public class ImportServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        SessionUtils.checkAdminPermission(req);
+        if(!SessionUtils.checkAdminPermission(req, resp)){
+            return;
+        }
 
         BCEngine engine = EngineUtils.getEngine(getServletContext());
 

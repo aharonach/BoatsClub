@@ -25,7 +25,9 @@ import java.util.stream.Collectors;
 public class BoatsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        SessionUtils.checkAdminPermission(req);
+        if(!SessionUtils.checkAdminPermission(req, resp)){
+            return;
+        }
 
         Boats controller = EngineUtils.getBoats(getServletContext());
 
@@ -53,7 +55,9 @@ public class BoatsServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        SessionUtils.checkAdminPermission(req);
+        if(!SessionUtils.checkAdminPermission(req, resp)){
+            return;
+        }
 
         String servletPath = req.getServletPath();
 
@@ -114,7 +118,9 @@ public class BoatsServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        SessionUtils.checkAdminPermission(req);
+        if(!SessionUtils.checkAdminPermission(req, resp)){
+            return;
+        }
 
         String servletPath = req.getServletPath();
 

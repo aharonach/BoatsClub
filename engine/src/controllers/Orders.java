@@ -536,9 +536,10 @@ public class Orders extends Entities implements OrdersController {
 
     private Set<Integer> collectRowerIds(OrderWrapper orderWrapper, Order order) {
         Set<Integer> rowerIds = new HashSet<>();
-        if (orderWrapper.getRowers() != null)
+        if (orderWrapper != null && orderWrapper.getRowers() != null)
             rowerIds.addAll(orderWrapper.getRowers());
-        rowerIds.addAll(order.getRowers());
+        if(order.getRowers() != null)
+            rowerIds.addAll(order.getRowers());
         rowerIds.add(order.getRegisterRower());
         return rowerIds;
     }

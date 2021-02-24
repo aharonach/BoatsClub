@@ -25,7 +25,7 @@ const ordersFormFields = [
         options: [
             {ajax: "rowers", valueField: "id", labelField: "name"}
         ],
-        label: "Select Yourself + optional rowers",
+        label: "Select rowers",
         required: true,
         multiple: true,
     },
@@ -34,6 +34,7 @@ const ordersFormFields = [
         type: "date",
         label: "Practice day (Later than today)",
         value: "",
+        required: true,
     },
     {
         id: "wantedActivity",
@@ -81,7 +82,7 @@ function getOrdersColumns() {
     };
 }
 
-function getOrderActions(orderId, approved) {
+function getOrderActions(orderId) {
     return `<span class="actions d-block"> ${editLink("orders", orderId)}</span>`;
 }
 
@@ -89,8 +90,8 @@ function orderRow(order, showActions = false) {
     console.log(order);
     let row = `<tr>`;
 
-    if (showActions) {
-        row += `<td>${order.id} ${getOrderActions(order.id, order.approvedRequest)}</span></td>`;
+    if (showActions && !order.approvedRequest) {
+        row += `<td>${order.id} ${getOrderActions(order.id)}</span></td>`;
     } else {
         row += `<td>${order.id}</td>`;
     }

@@ -247,7 +247,8 @@ document.addEventListener("click", event => {
                     action: el.href,
                 });
                 const title = action.charAt(0).toUpperCase() + action.slice(1);
-                showPopup(action + "-entity",title + " " + entity + " from" + " ID " + entityId, form.getHtml() );
+
+                showPopup(action + "-entity",title + " " + entity + " from" + " ID " + entityId, form.getHtml());
                 submitForm(formName, entity);
 
                 // for orders
