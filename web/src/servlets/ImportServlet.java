@@ -1,9 +1,9 @@
 package servlets;
 
-import com.google.gson.Gson;
 import engine.BCEngine;
 import server.Response;
 import utils.EngineUtils;
+import utils.ServletUtils;
 import utils.SessionUtils;
 
 import javax.servlet.ServletException;
@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Scanner;
@@ -43,12 +42,8 @@ public class ImportServlet extends HttpServlet {
             fileContent = scanner.useDelimiter("\\A").next();
             List<String> feedback;
             feedback = engine.importRecords(entity, fileContent, override);
-            Gson gson = new Gson();
             Response response = new Response(null, feedback);
-            try(PrintWriter out = resp.getWriter()) {
-                out.println(gson.toJson(response));
-                out.flush();
-            }
+            ServletUtils.sendResponse(resp, response);
         }
     }
 }

@@ -1,12 +1,11 @@
 package servlets;
 
-import com.google.gson.Gson;
 import constants.Constants;
 import entities.Rower;
 import server.Response;
 import utils.EngineUtils;
-import utils.SessionUtils;
 import utils.ServletUtils;
+import utils.SessionUtils;
 
 import javax.security.auth.login.CredentialNotFoundException;
 import javax.servlet.ServletException;
@@ -15,7 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 @WebServlet(name = "LoginServlet", urlPatterns = "/login")
 public class LoginServlet extends HttpServlet {
@@ -32,27 +30,23 @@ public class LoginServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String email = req.getParameter("email");
         String password = req.getParameter("password");
         
-        resp.setContentType("application/json");
+//        resp.setContentType("application/json");
 
         if (email != null && password != null) {
-            String json;
-            Gson gson = new Gson();
-            try (PrintWriter out = resp.getWriter()) {
-                try {
-                    Rower rower = EngineUtils.getEngine(getServletContext()).authenticate(email, password);
-                    SessionUtils.setUser(req, rower);
-                    json = gson.toJson(new Response(true, "Successfully logged in"));
-                    SessionUtils.addCookies(rower, resp);
-                } catch (CredentialNotFoundException e) {
-                    json = gson.toJson(new Response(false, "Credential not found"));
-                }
-                out.println(json);
-                out.flush();
+            Response response;
+            try {
+                Rower rower = EngineUtils.getEngine(getServletContext()).authenticate(email, password);
+                SessionUtils.setUser(req, rower);
+                response = new Response(true, "Successfully logged in");
+                SessionUtils.addCookies(rower, resp);
+            } catch (CredentialNotFoundException e) {
+                response = new Response(false, "Wrong email or password");
             }
+            ServletUtils.sendResponse(resp, response);
         }
     }
 }

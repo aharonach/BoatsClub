@@ -9,15 +9,15 @@ import exceptions.RecordAlreadyExistsException;
 import exceptions.RecordNotFoundException;
 import server.Response;
 import utils.EngineUtils;
+import utils.ServletUtils;
 import utils.SessionUtils;
 import wrappers.RowerWrapper;
-import javax.servlet.ServletException;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.time.LocalDateTime;
 
 import static entities.Rower.yearsUntilExpired;
@@ -25,7 +25,7 @@ import static entities.Rower.yearsUntilExpired;
 @WebServlet(name = "RowersServlet", urlPatterns = {"/rowers", "/rowers/edit", "/rowers/add", "/rowers/delete", "/rowers/getUser"})
 public class RowersServlet extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if(!SessionUtils.checkPermissions(req, resp)){
             return;
         }
@@ -59,14 +59,11 @@ public class RowersServlet extends HttpServlet {
             json = gson.toJson(rowers);
         }
 
-        try(PrintWriter out = resp.getWriter()) {
-            out.println(json);
-            out.flush();
-        }
+        ServletUtils.sendResponse(resp, json);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if(!SessionUtils.checkPermissions(req, resp)){
             return;
         }
@@ -86,7 +83,7 @@ public class RowersServlet extends HttpServlet {
         }
     }
 
-    protected void addRower(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void addRower(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Response response;
         Rowers controller = EngineUtils.getRowers(getServletContext());
 
@@ -97,16 +94,10 @@ public class RowersServlet extends HttpServlet {
             response = new Response(false, e.getMessage());
         }
 
-        Gson gson = new Gson();
-        String json = gson.toJson(response);
-
-        try(PrintWriter out = resp.getWriter()) {
-            out.println(json);
-            out.flush();
-        }
+        ServletUtils.sendResponse(resp, response);
     }
 
-    protected void editRower(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void editRower(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Response response;
         Rowers controller = EngineUtils.getRowers(getServletContext());
         Rower loggedIn = SessionUtils.getUser(req);
@@ -126,15 +117,11 @@ public class RowersServlet extends HttpServlet {
             }
         }
 
-        String json = gson.toJson(response);
-        try(PrintWriter out = resp.getWriter()) {
-            out.println(json);
-            out.flush();
-        }
+        ServletUtils.sendResponse(resp, response);
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if(!SessionUtils.checkAdminPermission(req, resp)){
             return;
         }
@@ -152,13 +139,8 @@ public class RowersServlet extends HttpServlet {
             } catch (RecordNotFoundException e) {
                 response = new Response(false, e.getMessage());
             }
-            Gson gson = new Gson();
-            String json = gson.toJson(response);
 
-            try(PrintWriter out = resp.getWriter()) {
-                out.println(json);
-                out.flush();
-            }
+            ServletUtils.sendResponse(resp, response);
         }
     }
 

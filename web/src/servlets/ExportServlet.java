@@ -2,8 +2,8 @@ package servlets;
 
 import engine.BCEngine;
 import utils.EngineUtils;
-import utils.SessionUtils;
 import utils.ServletUtils;
+import utils.SessionUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,7 +16,7 @@ import java.io.IOException;
 @WebServlet(name = "ExportServlet", urlPatterns = "/export")
 public class ExportServlet extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if(!SessionUtils.checkAdminPermission(req, resp)){
             return;
         }

@@ -23,8 +23,9 @@ const appointOrderFields = [
         type: "select",
         label: "Select a boat to appoint",
         options: [
-            {ajax: "boats", valueField: "id", labelField: "name+typeName"}
+            {ajax: "boats?filterBy=types&types=", valueField: "id", labelField: "name+typeName"}
         ],
+        required: true,
     },
 ];
 
@@ -37,7 +38,9 @@ document.addEventListener('click', event => {
             boatTypes = el.dataset.boatTypes;
 
         const newFormFields = JSON.parse(JSON.stringify(appointOrderFields));
-        newFormFields[0].options[0].ajax += "?" + boatTypes;
+        newFormFields[0].options[0].ajax += boatTypes;
+
+        console.log(newFormFields);
 
         prepareOptions(newFormFields).then(fields => {
             const form = new Form({

@@ -8,23 +8,23 @@ import exceptions.RecordAlreadyExistsException;
 import exceptions.RecordNotFoundException;
 import server.Response;
 import utils.EngineUtils;
+import utils.ServletUtils;
 import utils.SessionUtils;
 import wrappers.BoatWrapper;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @WebServlet(name = "BoatsServlet", urlPatterns = {"/boats", "/boats/edit", "/boats/add", "/boats/delete"})
 public class BoatsServlet extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if(!SessionUtils.checkAdminPermission(req, resp)){
             return;
         }
@@ -47,14 +47,11 @@ public class BoatsServlet extends HttpServlet {
             }
         }
 
-        try(PrintWriter out = resp.getWriter()) {
-            out.println(json);
-            out.flush();
-        }
+        ServletUtils.sendResponse(resp, json);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if(!SessionUtils.checkAdminPermission(req, resp)){
             return;
         }
@@ -74,7 +71,7 @@ public class BoatsServlet extends HttpServlet {
         }
     }
 
-    protected void addBoat(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void addBoat(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Response response;
         Boats controller = EngineUtils.getBoats(getServletContext());
 
@@ -85,16 +82,10 @@ public class BoatsServlet extends HttpServlet {
             response = new Response(false, e.getMessage());
         }
 
-        Gson gson = new Gson();
-        String json = gson.toJson(response);
-
-        try(PrintWriter out = resp.getWriter()) {
-            out.println(json);
-            out.flush();
-        }
+        ServletUtils.sendResponse(resp, response);
     }
 
-    protected void editBoat(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void editBoat(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Response response;
         Boats controller = EngineUtils.getBoats(getServletContext());
 
@@ -107,17 +98,11 @@ public class BoatsServlet extends HttpServlet {
             response = new Response(false, e.getMessage());
         }
 
-        Gson gson = new Gson();
-        String json = gson.toJson(response);
-
-        try(PrintWriter out = resp.getWriter()) {
-            out.println(json);
-            out.flush();
-        }
+        ServletUtils.sendResponse(resp, response);
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if(!SessionUtils.checkAdminPermission(req, resp)){
             return;
         }
@@ -133,13 +118,8 @@ public class BoatsServlet extends HttpServlet {
             } catch (RecordNotFoundException e) {
                 response = new Response(false, e.getMessage());
             }
-            Gson gson = new Gson();
-            String json = gson.toJson(response);
 
-            try(PrintWriter out = resp.getWriter()) {
-                out.println(json);
-                out.flush();
-            }
+            ServletUtils.sendResponse(resp, response);
         }
     }
 

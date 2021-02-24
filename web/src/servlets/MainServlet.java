@@ -1,8 +1,8 @@
 package servlets;
 
 import entities.Rower;
-import utils.SessionUtils;
 import utils.ServletUtils;
+import utils.SessionUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

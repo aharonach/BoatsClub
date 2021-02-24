@@ -35,7 +35,7 @@ public class ActiveUsers {
             if (TIMEOUT_IN_MINUTES <= ChronoUnit.MINUTES.between(session.getValue(), LocalDateTime.now())){
                 removeActiveUser(session.getKey());
             }
-        };
+        }
     }
 
     public static void print() {

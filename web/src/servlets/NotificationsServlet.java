@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import data.Notifications;
 import server.Response;
 import utils.EngineUtils;
+import utils.ServletUtils;
 import utils.SessionUtils;
 
 import javax.servlet.ServletException;
@@ -12,12 +13,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 @WebServlet(name = "NotificationsServlet", urlPatterns = "/notifications")
 public class NotificationsServlet extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if(!SessionUtils.checkPermissions(req, resp)){
             return;
         }
@@ -35,10 +35,7 @@ public class NotificationsServlet extends HttpServlet {
             json = gson.toJson(n.getUserNotifications(userId));
         }
 
-        try (PrintWriter out = resp.getWriter()) {
-            out.println(json);
-            out.flush();
-        }
+        ServletUtils.sendResponse(resp, json);
 
         // Clear notifications of a user right after he fetches them
         if (!fetchAdminNotification) {
@@ -47,7 +44,7 @@ public class NotificationsServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if(!SessionUtils.checkAdminPermission(req, resp)){
             return;
         }
@@ -58,34 +55,22 @@ public class NotificationsServlet extends HttpServlet {
         }
     }
 
-    private void deleteNotification(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private void deleteNotification(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Response response;
 
         EngineUtils.getNotifications(getServletContext()).deleteAdminNotification(Integer.parseInt(req.getParameter("delete")));
         response = new Response(true, "Notification deleted");
 
-        Gson gson = new Gson();
-        String json = gson.toJson(response);
-
-        try(PrintWriter out = resp.getWriter()) {
-            out.println(json);
-            out.flush();
-        }
+        ServletUtils.sendResponse(resp, response);
     }
 
-    private void addNotificationToAllUsers(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private void addNotificationToAllUsers(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Response response;
         String message = req.getParameter("message");
 
         EngineUtils.getNotifications(getServletContext()).addAdminNotification(message);
         response = new Response(true, "Notification to all Rowers added successfully");
 
-        Gson gson = new Gson();
-        String json = gson.toJson(response);
-
-        try(PrintWriter out = resp.getWriter()) {
-            out.println(json);
-            out.flush();
-        }
+        ServletUtils.sendResponse(resp, response);
     }
 }

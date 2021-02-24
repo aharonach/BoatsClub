@@ -9,22 +9,22 @@ import exceptions.RecordAlreadyExistsException;
 import exceptions.RecordNotFoundException;
 import server.Response;
 import utils.EngineUtils;
+import utils.ServletUtils;
 import utils.SessionUtils;
 import wrappers.ActivityWrapper;
-import javax.servlet.ServletException;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.time.LocalTime;
 
 
 @WebServlet(name = "ActivitiesServlet", urlPatterns = {"/activities", "/activities/edit", "/activities/add", "/activities/delete"})
 public class ActivitiesServlet extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if(!SessionUtils.checkPermissions(req, resp)){
             return;
         }
@@ -46,14 +46,11 @@ public class ActivitiesServlet extends HttpServlet {
             json = gson.toJson(activities);
         }
 
-        try(PrintWriter out = resp.getWriter()) {
-            out.println(json);
-            out.flush();
-        }
+        ServletUtils.sendResponse(resp, json);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if(!SessionUtils.checkAdminPermission(req, resp)){
             return;
         }
@@ -73,7 +70,7 @@ public class ActivitiesServlet extends HttpServlet {
         }
     }
 
-    protected void addActivity(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void addActivity(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Response response;
         Activities controller = EngineUtils.getActivities(getServletContext());
 
@@ -84,16 +81,10 @@ public class ActivitiesServlet extends HttpServlet {
             response = new Response(false, e.getMessage());
         }
 
-        Gson gson = new Gson();
-        String json = gson.toJson(response);
-
-        try(PrintWriter out = resp.getWriter()) {
-            out.println(json);
-            out.flush();
-        }
+        ServletUtils.sendResponse(resp, response);
     }
 
-    protected void editActivity(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void editActivity(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Response response;
         Activities controller = EngineUtils.getActivities(getServletContext());
 
@@ -106,17 +97,11 @@ public class ActivitiesServlet extends HttpServlet {
             response = new Response(false, e.getMessage());
         }
 
-        Gson gson = new Gson();
-        String json = gson.toJson(response);
-
-        try(PrintWriter out = resp.getWriter()) {
-            out.println(json);
-            out.flush();
-        }
+        ServletUtils.sendResponse(resp, response);
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if(!SessionUtils.checkAdminPermission(req, resp)){
             return;
         }
@@ -132,13 +117,8 @@ public class ActivitiesServlet extends HttpServlet {
             } catch (RecordNotFoundException e) {
                 response = new Response(false, e.getMessage());
             }
-            Gson gson = new Gson();
-            String json = gson.toJson(response);
 
-            try(PrintWriter out = resp.getWriter()) {
-                out.println(json);
-                out.flush();
-            }
+            ServletUtils.sendResponse(resp, response);
         }
     }
 

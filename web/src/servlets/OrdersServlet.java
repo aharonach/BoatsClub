@@ -13,13 +13,13 @@ import utils.EngineUtils;
 import utils.ServletUtils;
 import utils.SessionUtils;
 import wrappers.OrderWrapper;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -107,13 +107,7 @@ public class OrdersServlet extends HttpServlet {
             response = new Response(false, e.getMessage());
         }
 
-        Gson gson = new Gson();
-        String json = gson.toJson(response);
-
-        try(PrintWriter out = resp.getWriter()) {
-            out.println(json);
-            out.flush();
-        }
+        ServletUtils.sendResponse(resp, response);
     }
 
     protected void editOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -134,13 +128,7 @@ public class OrdersServlet extends HttpServlet {
             response = new Response(false, e.getMessage());
         }
 
-        Gson gson = new Gson();
-        String json = gson.toJson(response);
-
-        try(PrintWriter out = resp.getWriter()) {
-            out.println(json);
-            out.flush();
-        }
+        ServletUtils.sendResponse(resp, response);
     }
 
     @Override
@@ -162,18 +150,13 @@ public class OrdersServlet extends HttpServlet {
             } catch (RecordNotFoundException e) {
                 response = new Response(false, e.getMessage());
             }
-            Gson gson = new Gson();
-            String json = gson.toJson(response);
 
-            try(PrintWriter out = resp.getWriter()) {
-                out.println(json);
-                out.flush();
-            }
+            ServletUtils.sendResponse(resp, response);
         }
     }
 
 
-    protected void appointOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void appointOrder(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if(!SessionUtils.checkAdminPermission(req, resp)){
             return;
         }
@@ -193,13 +176,7 @@ public class OrdersServlet extends HttpServlet {
             response = new Response(false, e.getMessage());
         }
 
-        Gson gson = new Gson();
-        String json = gson.toJson(response);
-
-        try(PrintWriter out = resp.getWriter()) {
-            out.println(json);
-            out.flush();
-        }
+        ServletUtils.sendResponse(resp, response);
     }
 
     protected void duplicateOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, RecordNotFoundException {
@@ -222,13 +199,7 @@ public class OrdersServlet extends HttpServlet {
             response = new Response(false, e.getMessage());
         }
 
-        Gson gson = new Gson();
-        String json = gson.toJson(response);
-
-        try(PrintWriter out = resp.getWriter()) {
-            out.println(json);
-            out.flush();
-        }
+        ServletUtils.sendResponse(resp, response);
     }
 
     protected void mergeOrders(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, RecordNotFoundException {
@@ -251,13 +222,7 @@ public class OrdersServlet extends HttpServlet {
             response = new Response(false, e.getMessage());
         }
 
-        Gson gson = new Gson();
-        String json = gson.toJson(response);
-
-        try(PrintWriter out = resp.getWriter()) {
-            out.println(json);
-            out.flush();
-        }
+        ServletUtils.sendResponse(resp, response);
     }
 
     private OrderWrapper getParams(int id, HttpServletRequest req) throws RecordNotFoundException {

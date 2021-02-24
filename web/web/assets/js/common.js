@@ -6,6 +6,10 @@ const getCookie = (name) => {
     if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
+const isAdmin = () => {
+    return getCookie("isAdmin") === "true";
+}
+
 async function ajaxRequest(url, method = 'get', data = false, multipart = false) {
     try {
         let params = {
@@ -23,15 +27,11 @@ async function ajaxRequest(url, method = 'get', data = false, multipart = false)
             }
         }
 
-        console.log("send data: " + data.toString());
-        console.log("url " + url);
-
         const response = await fetch(url, params);
 
         return await response.json();
     } catch (e) {
         console.log(e);
-        showAlert("error", e.message);
     }
 }
 
@@ -232,10 +232,14 @@ document.addEventListener("click", event => {
     const el = event.target;
     if (el.tagName === "A" && (el.href.includes("/edit") || el.href.includes("/duplicate"))) {
         event.preventDefault();
-        const action = el.href.includes('/duplicate') ? "duplicate" : "edit";
+        let action = el.href.includes('/duplicate') ? "duplicate" : "edit";
         const entity = el.dataset.entity,
             formFields = getFormFields(entity),
             entityId = el.dataset.id;
+
+        if (!isAdmin() && entity !== "orders") {
+            action = "view";
+        }
 
         ajaxRequest(entity, "get", { id: entityId }).then(record => {
             prepareOptions(formFields).then(fields => {
@@ -245,7 +249,7 @@ document.addEventListener("click", event => {
                     method: "post",
                     fields: prepareFormFields(record, fields),
                     action: el.href,
-                    noSubmit: getCookie("isAdmin") === "false" && entity !== "orders",
+                    noSubmit: !isAdmin() && entity !== "orders",
                 });
                 const title = action.charAt(0).toUpperCase() + action.slice(1);
 

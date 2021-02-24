@@ -1,7 +1,6 @@
 package utils;
 
 import com.google.gson.Gson;
-import server.Response;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
