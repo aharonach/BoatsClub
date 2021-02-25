@@ -145,7 +145,7 @@ public class OrdersServlet extends HttpServlet {
             try {
                 EngineUtils.getEngine(getServletContext()).setUser(SessionUtils.getUser(req).getId());
                 EngineUtils.getOrders(getServletContext()).delete(Integer.parseInt(id));
-                response = new Response(true, "Order with ID " + id + " deleted. He was deleted also from his orders.");
+                response = new Response(true, "Order with ID " + id + " deleted.");
                 EngineUtils.getEngine(getServletContext()).setUser(null);
             } catch (RecordNotFoundException e) {
                 response = new Response(false, e.getMessage());

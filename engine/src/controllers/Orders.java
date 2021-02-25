@@ -325,7 +325,8 @@ public class Orders extends Entities implements OrdersController {
     }
 
     public void deleteOrdersWithBoat(int boatId) {
-        Order[] ordersList = findOrdersByBoat(boatId, false);
+        Order[] ordersList = findOrdersByBoat(boatId, true);
+
         for (Order o : ordersList) {
             try {
                 delete(o.getId());
