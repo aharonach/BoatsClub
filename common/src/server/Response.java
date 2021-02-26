@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class Response implements Serializable {
     String error = null;
     Object value = null;
-    Boolean status;
+    final Boolean status;
 
     public Response(Boolean status, Object value){
         this.status = status;

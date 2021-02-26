@@ -304,15 +304,17 @@ const submitForm = (formId, entity, multipart = false) => {
     })
 };
 
-document.querySelector(".navbar-toggler").addEventListener("click", e=> {
-    e.preventDefault();
-    const menu = document.getElementById("sidebarMenu");
-    if (menu.classList.contains("show")) {
-        menu.classList.remove("show");
-    } else {
-        menu.classList.add("show");
-    }
-});
+if (document.querySelector(".navbar-toggler")) {
+    document.querySelector(".navbar-toggler").addEventListener("click", e=> {
+        e.preventDefault();
+        const menu = document.getElementById("sidebarMenu");
+        if (menu.classList.contains("show")) {
+            menu.classList.remove("show");
+        } else {
+            menu.classList.add("show");
+        }
+    });
+}
 
 document.querySelectorAll("ul.subnav .nav-link, .nav-link-dashboard, .nav-link-add-message").forEach(el => {
     el.addEventListener("click", e => {
@@ -322,3 +324,8 @@ document.querySelectorAll("ul.subnav .nav-link, .nav-link-dashboard, .nav-link-a
         }
     });
 });
+
+let loggedInEl = document.querySelector('.logged-in');
+if (loggedInEl) {
+    loggedInEl.innerHTML = "Hi, " + getCookie("name");
+}

@@ -14,7 +14,6 @@ import utils.ServletUtils;
 import utils.SessionUtils;
 import wrappers.OrderWrapper;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -53,7 +52,7 @@ public class OrdersServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if (!SessionUtils.checkPermissions(req, resp)) {
             return;
         }
@@ -90,7 +89,7 @@ public class OrdersServlet extends HttpServlet {
         }
     }
 
-    protected void addOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void addOrder(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if (!SessionUtils.checkPermissions(req, resp)) {
             return;
         }
@@ -110,7 +109,7 @@ public class OrdersServlet extends HttpServlet {
         ServletUtils.sendResponse(resp, response);
     }
 
-    protected void editOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void editOrder(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if (!SessionUtils.checkPermissions(req, resp)) {
             return;
         }
@@ -132,7 +131,7 @@ public class OrdersServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if (!SessionUtils.checkAdminPermission(req, resp)) {
             return;
         }
@@ -179,7 +178,7 @@ public class OrdersServlet extends HttpServlet {
         ServletUtils.sendResponse(resp, response);
     }
 
-    protected void duplicateOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, RecordNotFoundException {
+    protected void duplicateOrder(HttpServletRequest req, HttpServletResponse resp) throws IOException, RecordNotFoundException {
         if(!SessionUtils.checkAdminPermission(req, resp)){
             return;
         }
@@ -202,7 +201,7 @@ public class OrdersServlet extends HttpServlet {
         ServletUtils.sendResponse(resp, response);
     }
 
-    protected void mergeOrders(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, RecordNotFoundException {
+    protected void mergeOrders(HttpServletRequest req, HttpServletResponse resp) throws IOException, RecordNotFoundException {
         if(!SessionUtils.checkPermissions(req, resp)){
             return;
         }
@@ -251,6 +250,7 @@ public class OrdersServlet extends HttpServlet {
         Rower loggedIn = SessionUtils.getUser(req);
         controller.engine().setUser(loggedIn.getId());
         Order[] orders;
+        boolean appointed;
         switch (filter == null ? "" : filter) {
             case "user":
                 orders = controller.findOrdersByRower(loggedIn.getId());
@@ -273,18 +273,24 @@ public class OrdersServlet extends HttpServlet {
                 }
                 break;
             case "today":
-                orders = controller.findOrdersByDate(LocalDate.now());
+                appointed = Boolean.parseBoolean(req.getParameter("appointed"));
+                System.out.println("from today: " + appointed);
+                orders = controller.findOrdersByDate(LocalDate.now(), appointed);
                 break;
             case "lastWeek":
-                orders = controller.findOrdersFromLastWeek();
+                appointed = Boolean.parseBoolean(req.getParameter("appointed"));
+                System.out.println("from last week: " + appointed);
+                orders = controller.findOrdersFromLastWeek(appointed);
                 break;
             case "date":
                 LocalDate date = LocalDate.parse(req.getParameter("date"));
-                orders = controller.findOrdersByDate(date);
+                appointed = Boolean.parseBoolean(req.getParameter("appointed"));
+                orders = controller.findOrdersByDate(date, appointed);
                 break;
             case "week":
                 LocalDate fromDate = LocalDate.parse(req.getParameter("date"));
-                orders = controller.findOrdersFromDateToDate(fromDate, fromDate.plusWeeks(1));
+                appointed = Boolean.parseBoolean(req.getParameter("appointed"));
+                orders = controller.findOrdersFromDateToDate(fromDate, fromDate.plusWeeks(1), appointed);
                 break;
             case "":
             default:

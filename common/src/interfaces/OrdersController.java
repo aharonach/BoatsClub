@@ -76,7 +76,7 @@ public interface OrdersController extends Controller {
      * @param date activity date
      * @return orders
      */
-    Order[] findOrdersByDate(LocalDate date);
+    Order[] findOrdersByDate(LocalDate date, boolean status);
 
     /**
      * Find orders by activity date
@@ -94,9 +94,9 @@ public interface OrdersController extends Controller {
      */
     Order[] findApprovedOrdersByDateOfRower(int rowerId, LocalDate date);
 
-    Order[] findOrdersFromLastWeek();
+    Order[] findOrdersFromLastWeek(boolean status);
 
-    Order[] findOrdersFromDateToDate(LocalDate fromDate, LocalDate afterDate);
+    Order[] findOrdersFromDateToDate(LocalDate fromDate, LocalDate afterDate, boolean status);
 
     Order[] findOrdersFromDateToDateOfRower(int rowerId, LocalDate finalFromDate, LocalDate finalAfterDate);
 

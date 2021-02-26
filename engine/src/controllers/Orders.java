@@ -1,6 +1,5 @@
 package controllers;
 
-import data.Notifications;
 import engine.BCEngine;
 import entities.Boat;
 import entities.Entity;
@@ -244,11 +243,11 @@ public class Orders extends Entities implements OrdersController {
      * @param date activity date
      * @return orders
      */
-    public Order[] findOrdersByDate(LocalDate date) {
+    public Order[] findOrdersByDate(LocalDate date, boolean status) {
         if (engine().isAdmin()) {
             return filterList(o -> {
                 Order order = (Order) o;
-                return order.getActivityDate().equals(date);
+                return order.getActivityDate().equals(date) && order.isApprovedRequest() == status;
             });
         }
         return findOrdersByDateOfRower(engine().getUser().getId(), date);
@@ -280,11 +279,11 @@ public class Orders extends Entities implements OrdersController {
         });
     }
 
-    public Order[] findOrdersFromLastWeek() {
-        return findOrdersFromDateToDate(LocalDate.now().minusDays(7), LocalDate.now());
+    public Order[] findOrdersFromLastWeek(boolean status) {
+        return findOrdersFromDateToDate(LocalDate.now().minusDays(7), LocalDate.now(), status);
     }
 
-    public Order[] findOrdersFromDateToDate(LocalDate fromDate, LocalDate afterDate) {
+    public Order[] findOrdersFromDateToDate(LocalDate fromDate, LocalDate afterDate, boolean status) {
         fromDate = fromDate.minusDays(1); //so the day of the fromDate will also count
         afterDate = afterDate.plusDays(1); //so the day of the afterDate will also count
         LocalDate finalFromDate = fromDate;
@@ -295,7 +294,7 @@ public class Orders extends Entities implements OrdersController {
                 Order order = (Order) o;
                 boolean isAfter = order.getActivityDate().isAfter(finalFromDate),
                         isBefore = order.getActivityDate().isBefore(finalAfterDate);
-                return isBefore && isAfter;
+                return isBefore && isAfter && order.isApprovedRequest() == status;
             });
         }
 
