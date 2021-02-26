@@ -125,7 +125,6 @@ document.querySelectorAll('.orders-menu').forEach(link => {
         const el = e.target;
         ajaxRequest(el.href).then(function(response) {
             let table = createTable('orders-list', getOrdersColumns(), response, orderRow, true, "orders");
-            console.log(response);
             putContent(el.dataset.title, table, mergeButton());
             document.getElementById("merge-orders-button").addEventListener("click", e=>{
                 prepareOptions(mergeOrdersFields).then((fields) => {

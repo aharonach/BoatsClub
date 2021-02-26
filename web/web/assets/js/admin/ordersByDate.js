@@ -27,7 +27,7 @@ const ordersByDateFilters = () => {
             </div>
         </div>
         <div class="input-group-append">
-            <input type="date" class="form-control form-control-sm" id="filterByDate" name="date">
+            <input type="date" class="form-control form-control-sm" id="filterByDate" name="date" value="${new Date().toISOString().split('T')[0]}">
         </div>
     </div>
     <button type="submit" class="ml-2 filter-order btn btn-sm btn-secondary"><span data-feather="arrow-right"></span></button>

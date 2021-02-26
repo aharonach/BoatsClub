@@ -87,7 +87,6 @@ function getOrderActions(orderId) {
 }
 
 function orderRow(order, showActions = false) {
-    console.log(order);
     let row = `<tr>`;
 
     if (showActions && !order.approvedRequest) {
@@ -114,7 +113,6 @@ document.querySelectorAll('.orders-menu').forEach(link => {
         const el = e.target;
         ajaxRequest(el.href).then(function(response) {
             let table = createTable('orders-list', getOrdersColumns(), response, orderRow, true, "orders");
-            console.log(response);
             putContent(el.dataset.title, table, "");
         });
     });

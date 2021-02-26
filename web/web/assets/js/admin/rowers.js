@@ -111,7 +111,7 @@ function rowerRow(rower, showActions = false) {
         <td>${formatDateTime(rower.joined)} </td>
         <td>${formatDateTime(rower.expired)}</td>
         <td>${booleanFeather(rower.isManager)}</td>
-        <td>${rower.notes}</td>
+        <td>${rower.notes ? rower.notes : ""}</td>
     </tr>`;
 
     return row;

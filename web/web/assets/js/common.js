@@ -114,8 +114,6 @@ function showAlert(type, content, seconds = 5000) {
 }
 
 function createTable(id, columns, list, createRowFunction, showActions = false, menuItem) {
-    if(list === undefined)
-        putContent('No ' + menuItem + ' found.', '')
     return `<div class="table-responsive"><table id="${id}" class="table table-hover"><thead>${tableHeader(columns)}</thead><tbody>${tableRows(list, createRowFunction, showActions)}</tbody></table></div>`;
 }
 

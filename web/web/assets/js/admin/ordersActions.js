@@ -40,8 +40,6 @@ document.addEventListener('click', event => {
         const newFormFields = JSON.parse(JSON.stringify(appointOrderFields));
         newFormFields[0].options[0].ajax += boatTypes;
 
-        console.log(newFormFields);
-
         prepareOptions(newFormFields).then(fields => {
             const form = new Form({
                 id: "appoint-order",

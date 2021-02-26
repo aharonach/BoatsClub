@@ -274,12 +274,10 @@ public class OrdersServlet extends HttpServlet {
                 break;
             case "today":
                 appointed = Boolean.parseBoolean(req.getParameter("appointed"));
-                System.out.println("from today: " + appointed);
                 orders = controller.findOrdersByDate(LocalDate.now(), appointed);
                 break;
             case "lastWeek":
                 appointed = Boolean.parseBoolean(req.getParameter("appointed"));
-                System.out.println("from last week: " + appointed);
                 orders = controller.findOrdersFromLastWeek(appointed);
                 break;
             case "date":
