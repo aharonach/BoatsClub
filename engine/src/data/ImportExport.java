@@ -395,7 +395,6 @@ public class ImportExport {
         Unmarshaller u = jc.createUnmarshaller();
         SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         URL ip = this.getClass().getResource("/schemes/" + scheme.concat(".xsd"));
-        System.out.println(ip.toString());
         Schema schema = sf.newSchema(ip);
         u.setSchema(schema);
         return u.unmarshal(in);
