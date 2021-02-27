@@ -6,6 +6,7 @@ const mergeOrdersFields = [
         options: [
             {ajax: "orders", valueField: "id", labelField: "id"}
         ],
+        required: true,
     },
     {
         id: "order2",
@@ -14,6 +15,7 @@ const mergeOrdersFields = [
         options: [
             {ajax: "orders", valueField: "id", labelField: "id"}
         ],
+        required: true,
     },
 ];
 

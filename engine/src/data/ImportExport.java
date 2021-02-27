@@ -15,6 +15,7 @@ import org.xml.sax.SAXException;
 import exceptions.InvalidInputException;
 import exceptions.RecordAlreadyExistsException;
 import exceptions.RecordNotFoundException;
+import utils.Utils;
 import wrappers.ActivityWrapper;
 import wrappers.BoatWrapper;
 import wrappers.RowerWrapper;
@@ -29,6 +30,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.*;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -38,9 +40,16 @@ import java.util.Scanner;
 public class ImportExport {
 
     private final static String JAXB_PACKAGE = "jaxb";
-    private final static String SCHEME_LOCATION_PREFIX = System.getProperty("user.dir").replace("bin", "webapps") + "/boatsclub-resources/";
+    private static String SCHEME_LOCATION = System.getProperty("user.dir");
+    private final static String SCHEME_LOCATION_SUFFIX = "/boatsclub/";
 
-    public ImportExport() {}
+    public ImportExport() {
+        if (Utils.getOS().equals("linux")) {
+            SCHEME_LOCATION += "/webapps" + SCHEME_LOCATION_SUFFIX;
+        } else {
+            SCHEME_LOCATION = SCHEME_LOCATION.replace("\\bin", "\\webapps") + SCHEME_LOCATION_SUFFIX.replace("/", "\\");
+        }
+    }
 
     private Object importFromFile(String filepath, String scheme) throws IOException, JAXBException, SAXException {
         File file = new File(filepath);
@@ -375,7 +384,6 @@ public class ImportExport {
                 }
                 timeframes.add(timeframe);
             } catch (IllegalArgumentException e) {
-                System.out.println("here 0");
                 System.out.println("Error export: " + e.getMessage());
             }
         }
@@ -386,7 +394,9 @@ public class ImportExport {
         JAXBContext jc = JAXBContext.newInstance(JAXB_PACKAGE);
         Unmarshaller u = jc.createUnmarshaller();
         SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Schema schema = sf.newSchema(new File(SCHEME_LOCATION_PREFIX + scheme.concat(".xsd")));
+        URL ip = this.getClass().getResource("/schemes/" + scheme.concat(".xsd"));
+        System.out.println(ip.toString());
+        Schema schema = sf.newSchema(ip);
         u.setSchema(schema);
         return u.unmarshal(in);
     }
@@ -396,7 +406,8 @@ public class ImportExport {
         Marshaller m = jc.createMarshaller();
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Schema schema = sf.newSchema(new File(SCHEME_LOCATION_PREFIX + scheme.concat(".xsd")));
+        URL ip = this.getClass().getResource("/schemes/" + scheme.concat(".xsd"));
+        Schema schema = sf.newSchema(ip);
         m.setSchema(schema);
         return m;
     }

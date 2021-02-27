@@ -4,6 +4,11 @@
     <root id="archive" name="engine.jar">
       <element id="module-output" name="engine" />
       <element id="module-output" name="common" />
+      <element id="directory" name="schemes">
+        <element id="file-copy" path="$USER_HOME$/Desktop/boatsclub-resources/activities.xsd" />
+        <element id="file-copy" path="$USER_HOME$/Desktop/boatsclub-resources/members.xsd" />
+        <element id="file-copy" path="$USER_HOME$/Desktop/boatsclub-resources/boats.xsd" />
+      </element>
     </root>
   </artifact>
 </component>

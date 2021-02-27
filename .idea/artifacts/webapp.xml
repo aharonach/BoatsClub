@@ -10,6 +10,10 @@
           <element id="artifact" artifact-name="common:jar" />
           <element id="artifact" artifact-name="engine:jar" />
           <element id="library" level="project" name="gson-2.8.6" />
+          <element id="library" level="project" name="jaxb-api-2.3.1" />
+          <element id="library" level="project" name="jaxb-runtime-2.3.1" />
+          <element id="library" level="project" name="jaxb-impl-2.3.1" />
+          <element id="library" level="project" name="javax.activation-1.2.0" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="web/web/Web" />

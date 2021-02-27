@@ -5,6 +5,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import utils.Utils;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -26,8 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 public class XMLDatabase {
-    private final String directory = System.getProperty("user.dir").replace("\\bin", "\\webapps") + "\\boatsclub" +
-            "-resources";
+    private String directory = System.getProperty("user.dir");
     private final String xmlPath = "database.xml";
     private final Database database;
     private File file;
@@ -35,6 +35,11 @@ public class XMLDatabase {
     private Map<String, Element> entities;
 
     public XMLDatabase(Database database) {
+        if (Utils.getOS().equals("linux")) {
+            directory += "/webapps/boatsclub-resources/";
+        } else {
+            directory = directory.replace("\\bin", "\\webapps") + "\\boatsclub-resources\\";
+        }
         this.database = database;
         initXml();
     }
@@ -43,7 +48,7 @@ public class XMLDatabase {
      * JUST FOR START, IT'S NOT WORKING YET
      */
     private void initXml() {
-        file = new File(directory.concat("/" + xmlPath));
+        file = new File(directory.concat(xmlPath));
         entities = new HashMap<>();
 
         if (!file.exists()) {
@@ -108,7 +113,7 @@ public class XMLDatabase {
             File dir = new File(directory);
             if (!dir.exists()) {
                 dir.mkdir();
-                file = new File(directory.concat("/" + xmlPath));
+                file = new File(directory.concat(xmlPath));
             }
 
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
