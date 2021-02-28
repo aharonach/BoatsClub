@@ -104,8 +104,6 @@ public class RowersServlet extends HttpServlet {
 
         int id = Integer.parseInt(req.getParameter("id"));
 
-        Gson gson = new Gson();
-
         if (!loggedIn.isManager() && id != loggedIn.getId()) {
             response = new Response(false, "You don't have permissions to edit another rower");
         } else {

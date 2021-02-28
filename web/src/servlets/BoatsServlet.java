@@ -152,6 +152,9 @@ public class BoatsServlet extends HttpServlet {
             case "non-private-non-disabled":
                 boats = controller.findBoatByNonPrivateNonDisabled();
                 break;
+            case "private":
+                boats = controller.findPrivateBoats();
+                break;
             case "":
             default:
                 boats = controller.getList();

@@ -184,4 +184,11 @@ public class Boats extends Entities implements BoatsController {
     public Boat getRecord(int id) throws RecordNotFoundException {
         return (Boat) engine().getRecord("boats", id);
     }
+
+    public Boat[] findPrivateBoats() {
+        return filterList(b -> {
+            Boat boat = (Boat) b;
+            return boat.isPrivate();
+        });
+    }
 }
