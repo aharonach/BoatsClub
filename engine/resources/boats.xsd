@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0">
+
+    <xs:element name="boats">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="boat" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="boat">
+        <xs:complexType>
+            <xs:attribute name="id" type="xs:string" use="required"/>
+            <xs:attribute name="name" type="xs:string" use="required"/>
+            <xs:attribute name="type" type="BoatType" use="required"/>
+            <xs:attribute name="private" type="xs:boolean"/>
+            <xs:attribute name="wide" type="xs:boolean"/>
+            <xs:attribute name="hasCoxswain" type="xs:boolean"/>
+            <xs:attribute name="costal" type="xs:boolean"/>
+            <xs:attribute name="outOfOrder" type="xs:boolean"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:simpleType name="BoatType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Single"/>
+            <xs:enumeration value="Double"/>
+            <xs:enumeration value="Coxed_Double"/>
+            <xs:enumeration value="Pair"/>
+            <xs:enumeration value="Coxed_Pair"/>
+            <xs:enumeration value="Four"/>
+            <xs:enumeration value="Coxed_Four"/>
+            <xs:enumeration value="Quad"/>
+            <xs:enumeration value="Coxed_Quad"/>
+            <xs:enumeration value="Octuple"/>
+            <xs:enumeration value="Eight"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>
+

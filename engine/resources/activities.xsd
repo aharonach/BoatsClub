@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0">
+
+    <xs:element name="activities">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="timeframe" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="timeframe">
+        <xs:complexType>
+            <xs:attribute name="name" type="xs:string" use="required"/>
+            <xs:attribute name="startTime" type="xs:string" use="required"/>
+            <xs:attribute name="endTime" type="xs:string" use="required"/>
+            <xs:attribute name="boatType" type="boatType"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:simpleType name="boatType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Single"/>
+            <xs:enumeration value="Double"/>
+            <xs:enumeration value="Coxed_Double"/>
+            <xs:enumeration value="Pair"/>
+            <xs:enumeration value="Coxed_Pair"/>
+            <xs:enumeration value="Four"/>
+            <xs:enumeration value="Coxed_Four"/>
+            <xs:enumeration value="Quad"/>
+            <xs:enumeration value="Coxed_Quad"/>
+            <xs:enumeration value="Octuple"/>
+            <xs:enumeration value="Eight"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>
+

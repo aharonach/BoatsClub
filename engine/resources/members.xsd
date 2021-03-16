@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0">
+
+    <xs:element name="members">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="member" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="member">
+        <xs:complexType>
+            <xs:attribute name="id" type="xs:string" use="required"/>
+            <xs:attribute name="name" type="xs:string" use="required"/>
+            <xs:attribute name="age" type="xs:int"/>
+            <xs:attribute name="comments" type="xs:string"/>
+            <xs:attribute name="level" type="rowingLevel"/>
+            <xs:attribute name="joined" type="xs:dateTime"/>
+            <xs:attribute name="membershipExpiration" type="xs:dateTime"/>
+            <xs:attribute name="hasPrivateBoat" type="xs:boolean"/>
+            <xs:attribute name="privateBoatId" type="xs:string"/>
+            <xs:attribute name="phone" type="xs:string"/>
+            <xs:attribute name="email" type="xs:string" use="required"/>
+            <xs:attribute name="password" type="xs:string" use="required"/>
+            <xs:attribute name="manager" type="xs:boolean"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:simpleType name="rowingLevel">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Beginner"/>
+            <xs:enumeration value="Intermediate"/>
+            <xs:enumeration value="Advanced"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>
+

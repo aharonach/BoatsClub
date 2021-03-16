@@ -32,6 +32,8 @@ import javax.xml.validation.SchemaFactory;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -394,8 +396,8 @@ public class ImportExport {
         JAXBContext jc = JAXBContext.newInstance(JAXB_PACKAGE);
         Unmarshaller u = jc.createUnmarshaller();
         SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        URL ip = this.getClass().getResource("/schemes/" + scheme.concat(".xsd"));
-        Schema schema = sf.newSchema(ip);
+        URL res = getClass().getResource("/" + scheme.concat(".xsd"));
+        Schema schema = sf.newSchema(res);
         u.setSchema(schema);
         return u.unmarshal(in);
     }
@@ -405,8 +407,8 @@ public class ImportExport {
         Marshaller m = jc.createMarshaller();
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        URL ip = this.getClass().getResource("/schemes/" + scheme.concat(".xsd"));
-        Schema schema = sf.newSchema(ip);
+        URL res = getClass().getResource("/" + scheme.concat(".xsd"));
+        Schema schema = sf.newSchema(res);
         m.setSchema(schema);
         return m;
     }
