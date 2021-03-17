@@ -16,7 +16,7 @@ Open chrome and go to: [http://localhost:8080/boatsclub](http://localhost:8080/b
 
 The login page should appear automatically.
 
-You can access the application in [http://54.165.228.98:8080/boatsclub/](http://54.165.228.98:8080/boatsclub/) (Bonus).
+You can access the application in [http://34.228.65.247:8080/boatsclub/](http://54.165.228.98:8080/boatsclub/) (Bonus).
 
 ## Login details
 
